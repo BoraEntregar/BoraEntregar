@@ -83,22 +83,33 @@ export class ExcelController {
    */
   static async exportExcel(req: Request, res: Response): Promise<void> {
     try {
-      const { data, routeName = 'Rota' } = req.body;
+      const { processedDataId } = req.body;
 
-      if (!data || !Array.isArray(data)) {
+      if (!processedDataId) {
         res.status(400).json({
           success: false,
-          message: 'Dados inválidos para exportação'
+          message: 'ID do processamento não fornecido'
+        });
+        return;
+      }
+
+      // Buscar dados processados no MongoDB
+      const processedData = await ProcessedData.findById(processedDataId);
+
+      if (!processedData) {
+        res.status(404).json({
+          success: false,
+          message: 'Dados não encontrados'
         });
         return;
       }
 
       // Gerar nome do arquivo com data
       const date = new Date();
-      const fileName = `${routeName}_${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}.xlsx`;
+      const fileName = `${processedData.routeName.replace(/[^a-z0-9]/gi, '_')}_${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}.xlsx`;
 
       // Gerar arquivo Excel
-      const buffer = ExcelProcessor.generateExcelFile(data, fileName);
+      const buffer = ExcelProcessor.generateExcelFile(processedData.data as any, fileName);
 
       // Configurar headers para download
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -106,7 +117,7 @@ export class ExcelController {
       res.setHeader('Content-Length', buffer.length);
 
       res.send(buffer);
-      
+
     } catch (error: any) {
       console.error('Erro ao exportar arquivo:', error);
       res.status(500).json({

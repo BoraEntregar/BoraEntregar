@@ -1,51 +1,33 @@
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
-import { excelService } from '../services/api';
 import toast from 'react-hot-toast';
+import { excelService } from '../services/api';
 import type { ProcessExcelResponse } from '../types';
+import { validateFile, formatFileSize } from '../utils';
+import { MESSAGES } from '../constants';
 
-interface FileUploadProps {
+interface UploadPageProps {
   onSuccess: (data: ProcessExcelResponse['data']) => void;
 }
 
-export default function FileUpload({ onSuccess }: FileUploadProps) {
+export default function UploadPage({ onSuccess }: UploadPageProps) {
   const [file, setFile] = useState<File | null>(null);
   const [routeName, setRouteName] = useState('');
   const [loading, setLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
 
-  const isValidExcelFile = (file: File): boolean => {
-    // Validar por extensão (case insensitive)
-    const hasValidExtension = /\.(xlsx|xls)$/i.test(file.name);
-
-    // Validar por MIME type
-    const validMimeTypes = [
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
-      'application/vnd.ms-excel', // .xls
-    ];
-    const hasValidMimeType = validMimeTypes.includes(file.type);
-
-    return hasValidExtension || hasValidMimeType;
-  };
-
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
+      const validation = validateFile(selectedFile);
 
-      // Validar tipo de arquivo
-      if (!isValidExcelFile(selectedFile)) {
-        toast.error('Por favor, selecione um arquivo Excel (.xlsx ou .xls)');
-        return;
-      }
-
-      // Validar tamanho (10MB)
-      if (selectedFile.size > 10 * 1024 * 1024) {
-        toast.error('O arquivo não pode ter mais de 10MB');
+      if (!validation.valid) {
+        toast.error(validation.error!);
         return;
       }
 
       setFile(selectedFile);
-      toast.success(`Arquivo "${selectedFile.name}" selecionado`);
+      toast.success(`${MESSAGES.SUCCESS.FILE_SELECTED}: "${selectedFile.name}"`);
     }
   };
 
@@ -66,21 +48,15 @@ export default function FileUpload({ onSuccess }: FileUploadProps) {
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0];
+      const validation = validateFile(droppedFile);
 
-      // Validar tipo de arquivo
-      if (!isValidExcelFile(droppedFile)) {
-        toast.error('Por favor, selecione um arquivo Excel (.xlsx ou .xls)');
-        return;
-      }
-
-      // Validar tamanho (10MB)
-      if (droppedFile.size > 10 * 1024 * 1024) {
-        toast.error('O arquivo não pode ter mais de 10MB');
+      if (!validation.valid) {
+        toast.error(validation.error!);
         return;
       }
 
       setFile(droppedFile);
-      toast.success(`Arquivo "${droppedFile.name}" selecionado`);
+      toast.success(`${MESSAGES.SUCCESS.FILE_SELECTED}: "${droppedFile.name}"`);
     }
   };
 
@@ -95,12 +71,12 @@ export default function FileUpload({ onSuccess }: FileUploadProps) {
     e.preventDefault();
 
     if (!file) {
-      toast.error('Por favor, selecione um arquivo');
+      toast.error(MESSAGES.ERROR.NO_FILE_SELECTED);
       return;
     }
 
     if (!routeName.trim()) {
-      toast.error('Por favor, informe o nome da rota');
+      toast.error(MESSAGES.ERROR.NO_ROUTE_NAME);
       return;
     }
 
@@ -110,7 +86,7 @@ export default function FileUpload({ onSuccess }: FileUploadProps) {
       const response = await excelService.processExcel(file, routeName.trim());
 
       if (response.success && response.data) {
-        toast.success(response.message || 'Arquivo processado com sucesso!');
+        toast.success(response.message || MESSAGES.SUCCESS.FILE_UPLOADED);
         onSuccess(response.data);
 
         // Limpar formulário
@@ -121,10 +97,10 @@ export default function FileUpload({ onSuccess }: FileUploadProps) {
         const fileInput = document.getElementById('file-input') as HTMLInputElement;
         if (fileInput) fileInput.value = '';
       } else {
-        toast.error('Erro ao processar arquivo');
+        toast.error(MESSAGES.ERROR.PROCESSING_ERROR);
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Erro ao processar arquivo');
+      toast.error(error instanceof Error ? error.message : MESSAGES.ERROR.PROCESSING_ERROR);
     } finally {
       setLoading(false);
     }
@@ -132,7 +108,7 @@ export default function FileUpload({ onSuccess }: FileUploadProps) {
 
   return (
     <div className="file-upload-container">
-      <h2>Upload de Arquivo Excel</h2>
+      <h2>Enviar Planilha</h2>
 
       <form onSubmit={handleSubmit} className="upload-form">
         {/* Campo de nome da rota */}
@@ -173,7 +149,7 @@ export default function FileUpload({ onSuccess }: FileUploadProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <p className="file-name">{file.name}</p>
-                <p className="file-size">{(file.size / 1024).toFixed(2)} KB</p>
+                <p className="file-size">{formatFileSize(file.size)}</p>
                 <p className="click-text">Clique ou arraste para trocar o arquivo</p>
               </>
             ) : (

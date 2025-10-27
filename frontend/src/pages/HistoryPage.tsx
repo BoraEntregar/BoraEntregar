@@ -83,10 +83,10 @@ export default function History({ onViewDetails }: HistoryProps) {
   return (
     <div className="history-container">
       <div className="history-header">
-        <h2>Histórico de Processamentos</h2>
+        <h2>Histórico</h2>
         {total > 0 && (
           <p className="total-count">
-            {total} {total === 1 ? 'processamento' : 'processamentos'} encontrado{total !== 1 && 's'}
+            {total} {total === 1 ? 'registro' : 'registros'} encontrado{total !== 1 && 's'}
           </p>
         )}
       </div>
@@ -96,8 +96,8 @@ export default function History({ onViewDetails }: HistoryProps) {
           <svg className="icon large" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <h3>Nenhum processamento encontrado</h3>
-          <p>Faça upload de um arquivo Excel para começar</p>
+          <h3>Nenhum registro encontrado</h3>
+          <p>Envie uma planilha para começar</p>
         </div>
       ) : (
         <>
