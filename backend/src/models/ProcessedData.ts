@@ -3,6 +3,7 @@ import { GroupedData } from '../types/excel.types';
 
 // Interface do documento MongoDB
 export interface IProcessedData extends Document {
+  userId: string;
   routeName: string;
   processedAt: Date;
   originalFileName: string;
@@ -13,6 +14,11 @@ export interface IProcessedData extends Document {
 
 // Schema do MongoDB
 const ProcessedDataSchema: Schema = new Schema({
+  userId: {
+    type: String,
+    required: true,
+    index: true
+  },
   routeName: {
     type: String,
     required: true,
@@ -48,6 +54,6 @@ const ProcessedDataSchema: Schema = new Schema({
 });
 
 // Índices para otimizar buscas
-ProcessedDataSchema.index({ routeName: 1, processedAt: -1 });
+ProcessedDataSchema.index({ userId: 1, routeName: 1, processedAt: -1 });
 
 export default mongoose.model<IProcessedData>('ProcessedData', ProcessedDataSchema);

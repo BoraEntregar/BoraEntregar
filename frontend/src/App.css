@@ -49,7 +49,25 @@
   letter-spacing: -0.02em;
 }
 
-.nav {
+.nav,
+.app-nav {
+  display: flex;
+  gap: var(--spacing-sm);
+  background-color: var(--color-gray-100);
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-full);
+}
+
+.app-nav {
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-gray-200);
+  padding: var(--spacing-md) var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-content {
+  max-width: 1400px;
+  margin: 0 auto;
   display: flex;
   gap: var(--spacing-sm);
   background-color: var(--color-gray-100);

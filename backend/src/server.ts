@@ -1,9 +1,9 @@
-import app from './app';
+// Carregar variáveis de ambiente ANTES de qualquer outra importação
 import dotenv from 'dotenv';
-import { connectDatabase } from './config/database';
-
-// Carregar variáveis de ambiente
 dotenv.config();
+
+import app from './app';
+import { connectDatabase } from './config/database';
 
 const PORT = process.env.PORT || 5000;
 
@@ -15,8 +15,6 @@ const startServer = async () => {
       await connectDatabase();
     } catch (dbError) {
       console.warn('⚠️  MongoDB não conectado. Servidor rodará sem persistência de dados.');
-      console.warn('⚠️  Para habilitar o banco, configure o MongoDB Atlas ou instale MongoDB local.');
-      console.warn('⚠️  Veja instruções em: README.md');
     }
 
     // Iniciar servidor mesmo sem MongoDB (útil para desenvolvimento)
