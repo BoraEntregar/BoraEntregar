@@ -47,7 +47,7 @@ export const MESSAGES = {
 };
 
 // View Types
-export type ViewType = 'home' | 'upload' | 'results' | 'history';
+export type ViewType = 'home' | 'upload' | 'results' | 'history' | 'profile';
 
 // Routes
 export const VIEWS = {
@@ -55,4 +55,5 @@ export const VIEWS = {
   UPLOAD: 'upload' as ViewType,
   RESULTS: 'results' as ViewType,
   HISTORY: 'history' as ViewType,
+  PROFILE: 'profile' as ViewType,
 };

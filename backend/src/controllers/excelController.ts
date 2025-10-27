@@ -20,12 +20,22 @@ export class ExcelController {
         return;
       }
 
+      // Extrair userId do request (adicionado pelo middleware extractUserId)
+      const userId = (req as any).userId;
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          message: 'Usuário não autenticado'
+        });
+        return;
+      }
+
       const { routeName = 'Rota Padrão' } = req.body;
       const originalFileName = req.file.originalname;
-      
+
       // Ler arquivo Excel
       const excelData = ExcelProcessor.readExcelFile(req.file.buffer);
-      
+
       // Validar dados
       const validation = ExcelProcessor.validateExcelData(excelData);
       if (!validation.valid) {
@@ -39,8 +49,9 @@ export class ExcelController {
       // Agrupar dados
       const groupedData = ExcelProcessor.groupByCoordinates(excelData);
 
-      // Salvar no MongoDB
+      // Salvar no MongoDB com userId
       const processedRecord = new ProcessedData({
+        userId,
         routeName,
         originalFileName,
         totalRows: excelData.length,
@@ -84,6 +95,7 @@ export class ExcelController {
   static async exportExcel(req: Request, res: Response): Promise<void> {
     try {
       const { processedDataId } = req.body;
+      const userId = (req as any).userId;
 
       if (!processedDataId) {
         res.status(400).json({
@@ -93,13 +105,16 @@ export class ExcelController {
         return;
       }
 
-      // Buscar dados processados no MongoDB
-      const processedData = await ProcessedData.findById(processedDataId);
+      // Buscar dados processados no MongoDB (filtrado por userId)
+      const processedData = await ProcessedData.findOne({
+        _id: processedDataId,
+        userId
+      });
 
       if (!processedData) {
         res.status(404).json({
           success: false,
-          message: 'Dados não encontrados'
+          message: 'Dados não encontrados ou você não tem permissão para acessá-los'
         });
         return;
       }
@@ -135,17 +150,19 @@ export class ExcelController {
   static async getHistory(req: Request, res: Response): Promise<void> {
     try {
       const { limit = 10, page = 1 } = req.query;
-      
+      const userId = (req as any).userId;
+
       const skip = (Number(page) - 1) * Number(limit);
-      
+
+      // Filtrar histórico por userId
       const history = await ProcessedData
-        .find()
+        .find({ userId })
         .select('-data') // Não retorna o array de dados completo
         .sort({ processedAt: -1 })
         .limit(Number(limit))
         .skip(skip);
 
-      const total = await ProcessedData.countDocuments();
+      const total = await ProcessedData.countDocuments({ userId });
 
       res.status(200).json({
         success: true,
@@ -175,13 +192,18 @@ export class ExcelController {
   static async getById(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
+      const userId = (req as any).userId;
 
-      const record = await ProcessedData.findById(id);
+      // Buscar registro apenas se pertencer ao usuário
+      const record = await ProcessedData.findOne({
+        _id: id,
+        userId
+      });
 
       if (!record) {
         res.status(404).json({
           success: false,
-          message: 'Registro não encontrado'
+          message: 'Registro não encontrado ou você não tem permissão para acessá-lo'
         });
         return;
       }
@@ -208,13 +230,18 @@ export class ExcelController {
   static async deleteById(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
+      const userId = (req as any).userId;
 
-      const deleted = await ProcessedData.findByIdAndDelete(id);
+      // Deletar apenas se o registro pertencer ao usuário
+      const deleted = await ProcessedData.findOneAndDelete({
+        _id: id,
+        userId
+      });
 
       if (!deleted) {
         res.status(404).json({
           success: false,
-          message: 'Registro não encontrado'
+          message: 'Registro não encontrado ou você não tem permissão para deletá-lo'
         });
         return;
       }

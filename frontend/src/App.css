@@ -49,7 +49,25 @@
   letter-spacing: -0.02em;
 }
 
-.nav {
+.nav,
+.app-nav {
+  display: flex;
+  gap: var(--spacing-sm);
+  background-color: var(--color-gray-100);
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-full);
+}
+
+.app-nav {
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-gray-200);
+  padding: var(--spacing-md) var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-content {
+  max-width: 1400px;
+  margin: 0 auto;
   display: flex;
   gap: var(--spacing-sm);
   background-color: var(--color-gray-100);
@@ -91,10 +109,9 @@
 /* Main Content */
 .app-main {
   flex: 1;
-  max-width: 1400px;
   width: 100%;
   margin: 0 auto;
-  padding: var(--spacing-2xl) var(--spacing-xl);
+  padding: 0;
   position: relative;
   background: transparent;
 }
@@ -127,7 +144,7 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
   max-width: 800px;
-  margin: 0 auto;
+  margin: var(--spacing-2xl) var(--spacing-xl) 0;
   border: 1px solid var(--color-gray-200);
 }
 
@@ -345,6 +362,7 @@
   box-shadow: var(--shadow-lg);
   overflow: hidden;
   border: 1px solid var(--color-gray-200);
+  margin: var(--spacing-2xl) var(--spacing-xl) 0;
 }
 
 .table-header {
@@ -551,6 +569,7 @@
   box-shadow: var(--shadow-md);
   padding: var(--spacing-2xl);
   border: 1px solid var(--color-gray-200);
+  margin: var(--spacing-2xl) var(--spacing-xl) 0;
 }
 
 .history-header {
@@ -759,6 +778,7 @@
   gap: var(--spacing-lg);
   padding: var(--spacing-3xl) var(--spacing-xl);
   color: var(--color-gray-600);
+  margin: var(--spacing-2xl) var(--spacing-xl) 0;
 }
 
 .loading-overlay {
@@ -916,13 +936,12 @@
   justify-content: space-between;
   gap: var(--spacing-3xl);
   padding: var(--spacing-3xl);
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0 auto var(--spacing-3xl);
   position: relative;
   min-height: 600px;
   overflow: hidden;
-  border-radius: var(--radius-2xl);
-  margin-bottom: var(--spacing-3xl);
+  border-radius: 0;
 }
 
 /* Video Background - Apenas na Hero Section */
@@ -935,7 +954,7 @@
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
-  border-radius: var(--radius-2xl);
+  border-radius: 0;
 }
 
 .hero-video {
@@ -1148,7 +1167,7 @@
 
 /* Features Section */
 .features-section {
-  padding: var(--spacing-3xl) 0;
+  padding: var(--spacing-3xl) var(--spacing-xl);
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
@@ -1240,10 +1259,10 @@
 
 /* Benefits Section */
 .benefits-section {
-  padding: var(--spacing-3xl) 0;
+  padding: var(--spacing-3xl) var(--spacing-xl);
   background-color: var(--color-white);
   border-radius: var(--radius-2xl);
-  margin: var(--spacing-3xl) 0;
+  margin: var(--spacing-3xl) var(--spacing-xl);
   position: relative;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--color-gray-200);
@@ -1295,10 +1314,10 @@
 
 /* CTA Section */
 .cta-section {
-  padding: var(--spacing-3xl) 0;
+  padding: var(--spacing-3xl) var(--spacing-xl);
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   border-radius: var(--radius-2xl);
-  margin: var(--spacing-3xl) 0;
+  margin: var(--spacing-3xl) var(--spacing-xl);
   position: relative;
 }
 
