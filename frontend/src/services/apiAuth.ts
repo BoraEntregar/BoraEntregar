@@ -3,7 +3,6 @@ import type {
   ProcessExcelResponse,
   HistoryResponse,
   DetailResponse,
-  ErrorResponse,
 } from '../types';
 
 // Configuração base da API

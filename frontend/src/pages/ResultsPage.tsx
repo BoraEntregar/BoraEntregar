@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { saveAs } from 'file-saver';
-import * as XLSX from 'xlsx';
 import toast from 'react-hot-toast';
 import { excelService } from '../services/api';
 import type { GroupedData } from '../types';
@@ -57,46 +56,6 @@ export default function DataTable({ data }: DataTableProps) {
       toast.error(error instanceof Error ? error.message : 'Erro ao exportar arquivo');
     } finally {
       setExporting(false);
-    }
-  };
-
-  const handleExportLocal = () => {
-    try {
-      // Preparar dados para export
-      const exportData = (data.data || []).map((row, index) => ({
-        'Sequência': row.sequence || index + 1,
-        'Endereço': row.destinationAddress,
-        'Bairro': row.bairro || '',
-        'Cidade': row.city || '',
-        'CEP': row.zipcode || '',
-        'Latitude': row.latitude,
-        'Longitude': row.longitude,
-      }));
-
-      // Criar workbook e worksheet
-      const ws = XLSX.utils.json_to_sheet(exportData);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Rotas Agrupadas');
-
-      // Ajustar largura das colunas
-      const colWidths = [
-        { wch: 12 }, // Sequência
-        { wch: 50 }, // Endereço
-        { wch: 20 }, // Bairro
-        { wch: 20 }, // Cidade
-        { wch: 12 }, // CEP
-        { wch: 15 }, // Latitude
-        { wch: 15 }, // Longitude
-      ];
-      ws['!cols'] = colWidths;
-
-      // Exportar
-      const fileName = `${data.routeName.replace(/[^a-z0-9]/gi, '_')}_processado.xlsx`;
-      XLSX.writeFile(wb, fileName);
-      toast.success('Arquivo exportado com sucesso!');
-    } catch (error) {
-      toast.error('Erro ao exportar arquivo localmente');
-      console.error(error);
     }
   };
 
