@@ -5,9 +5,25 @@ import { auth, authConfig, extractUserId, requireAuth } from './middleware/auth'
 
 const app: Application = express();
 
+// Configuração de CORS com múltiplas origens permitidas
+const allowedOrigins = (process.env.FRONTEND_URLS || 'http://localhost:5173')
+  .split(',')
+  .map(url => url.trim())
+  .filter(url => url.length > 0);
+
 // Middlewares
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Permite requisições sem origin (mobile apps, Postman, etc)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`⚠️  CORS blocked request from origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 
