@@ -1,37 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
-import FileUpload from './components/FileUpload';
-import DataTable from './components/DataTable';
-import History from './components/History';
+import HomePage from './pages/HomePage';
+import UploadPage from './pages/UploadPage';
+import ResultsPage from './pages/ResultsPage';
+import HistoryPage from './pages/HistoryPage';
 import { excelService } from './services/api';
-import type { ProcessExcelResponse } from './types';
+import { useApiHealth, useProcessedData } from './hooks';
+import { VIEWS, APP_NAME, APP_VERSION, APP_DESCRIPTION, MESSAGES } from './constants';
+import type { ViewType } from './constants';
 import './App.css';
 
-type View = 'upload' | 'results' | 'history';
-
 function App() {
-  const [currentView, setCurrentView] = useState<View>('upload');
-  const [processedData, setProcessedData] = useState<ProcessExcelResponse['data'] | null>(null);
+  const [currentView, setCurrentView] = useState<ViewType>(VIEWS.HOME);
+  const { processedData, updateProcessedData, clearProcessedData, hasData } = useProcessedData();
   const [loading, setLoading] = useState(false);
 
   // Verificar saúde da API ao iniciar
-  useEffect(() => {
-    checkApiHealth();
-  }, []);
+  useApiHealth();
 
-  const checkApiHealth = async () => {
-    try {
-      await excelService.healthCheck();
-    } catch (error) {
-      toast.error('Não foi possível conectar ao servidor. Verifique se o backend está rodando.');
-    }
-  };
-
-  const handleUploadSuccess = (data: ProcessExcelResponse['data']) => {
+  const handleUploadSuccess = (data: typeof processedData) => {
     if (data) {
-      setProcessedData(data);
-      setCurrentView('results');
+      updateProcessedData(data);
+      setCurrentView(VIEWS.RESULTS);
     }
   };
 
@@ -40,8 +31,8 @@ function App() {
     try {
       const response = await excelService.getById(id);
       if (response.success && response.data) {
-        // Converter ProcessedDataDetail para o formato esperado pelo DataTable
-        const tableData: ProcessExcelResponse['data'] = {
+        // Converter ProcessedDataDetail para o formato esperado
+        const tableData = {
           _id: response.data._id,
           routeName: response.data.routeName,
           originalFileName: response.data.originalFileName,
@@ -50,19 +41,19 @@ function App() {
           data: response.data.data,
           processedAt: response.data.processedAt,
         };
-        setProcessedData(tableData);
-        setCurrentView('results');
+        updateProcessedData(tableData);
+        setCurrentView(VIEWS.RESULTS);
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Erro ao carregar detalhes');
+      toast.error(error instanceof Error ? error.message : MESSAGES.ERROR.LOAD_DETAILS_ERROR);
     } finally {
       setLoading(false);
     }
   };
 
   const handleNewUpload = () => {
-    setProcessedData(null);
-    setCurrentView('upload');
+    clearProcessedData();
+    setCurrentView(VIEWS.UPLOAD);
   };
 
   return (
@@ -72,12 +63,14 @@ function App() {
         toastOptions={{
           duration: 4000,
           style: {
-            background: '#363636',
-            color: '#fff',
+            background: '#ffffff',
+            color: '#1f2937',
+            border: '1px solid #e5e7eb',
+            boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
           },
           success: {
             iconTheme: {
-              primary: '#10b981',
+              primary: '#2563eb',
               secondary: '#fff',
             },
           },
@@ -97,12 +90,22 @@ function App() {
             <svg className="logo" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
             </svg>
-            <h1>BoraEntregar</h1>
+            <h1>{APP_NAME}</h1>
           </div>
 
           <nav className="nav">
             <button
-              className={`nav-btn ${currentView === 'upload' ? 'active' : ''}`}
+              className={`nav-btn ${currentView === VIEWS.HOME ? 'active' : ''}`}
+              onClick={() => setCurrentView(VIEWS.HOME)}
+            >
+              <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              Início
+            </button>
+
+            <button
+              className={`nav-btn ${currentView === VIEWS.UPLOAD ? 'active' : ''}`}
               onClick={handleNewUpload}
             >
               <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -111,10 +114,10 @@ function App() {
               Upload
             </button>
 
-            {processedData && (
+            {hasData && (
               <button
-                className={`nav-btn ${currentView === 'results' ? 'active' : ''}`}
-                onClick={() => setCurrentView('results')}
+                className={`nav-btn ${currentView === VIEWS.RESULTS ? 'active' : ''}`}
+                onClick={() => setCurrentView(VIEWS.RESULTS)}
               >
                 <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -124,8 +127,8 @@ function App() {
             )}
 
             <button
-              className={`nav-btn ${currentView === 'history' ? 'active' : ''}`}
-              onClick={() => setCurrentView('history')}
+              className={`nav-btn ${currentView === VIEWS.HISTORY ? 'active' : ''}`}
+              onClick={() => setCurrentView(VIEWS.HISTORY)}
             >
               <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -145,25 +148,27 @@ function App() {
           </div>
         )}
 
-        {!loading && currentView === 'upload' && (
-          <FileUpload onSuccess={handleUploadSuccess} />
+        {!loading && currentView === VIEWS.HOME && (
+          <HomePage onGetStarted={() => setCurrentView(VIEWS.UPLOAD)} />
         )}
 
-        {!loading && currentView === 'results' && processedData && (
-          <DataTable data={processedData} />
+        {!loading && currentView === VIEWS.UPLOAD && (
+          <UploadPage onSuccess={handleUploadSuccess} />
         )}
 
-        {!loading && currentView === 'history' && (
-          <History onViewDetails={handleViewDetails} />
+        {!loading && currentView === VIEWS.RESULTS && processedData && (
+          <ResultsPage data={processedData} />
+        )}
+
+        {!loading && currentView === VIEWS.HISTORY && (
+          <HistoryPage onViewDetails={handleViewDetails} />
         )}
       </main>
 
       {/* Footer */}
       <footer className="app-footer">
-        <p>
-          BoraEntregar - Sistema de Agrupamento de Rotas de Entrega
-        </p>
-        <p className="version">v1.0.0</p>
+        <p>{APP_NAME} - {APP_DESCRIPTION}</p>
+        <p className="version">{APP_VERSION}</p>
       </footer>
     </div>
   );

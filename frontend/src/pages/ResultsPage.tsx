@@ -133,15 +133,15 @@ export default function DataTable({ data }: DataTableProps) {
           </div>
           <div className="stats">
             <div className="stat">
-              <span className="stat-label">Linhas Originais</span>
+              <span className="stat-label">Total Original</span>
               <span className="stat-value">{data.totalRows}</span>
             </div>
             <div className="stat">
-              <span className="stat-label">Linhas Agrupadas</span>
+              <span className="stat-label">Total Agrupado</span>
               <span className="stat-value success">{data.groupedRows}</span>
             </div>
             <div className="stat">
-              <span className="stat-label">Redução</span>
+              <span className="stat-label">Economia</span>
               <span className="stat-value highlight">
                 {((1 - data.groupedRows / data.totalRows) * 100).toFixed(1)}%
               </span>

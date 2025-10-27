@@ -17,6 +17,12 @@ O BoraEntregar é uma aplicação full-stack que permite:
 BoraEntregar/
 ├── backend/          # API REST (Node.js + Express + MongoDB)
 └── frontend/         # Interface (React + TypeScript + Vite)
+    ├── pages/        # Páginas da aplicação
+    ├── hooks/        # Custom React hooks
+    ├── utils/        # Funções utilitárias
+    ├── constants/    # Constantes e configurações
+    ├── services/     # Serviços de API
+    └── types/        # TypeScript types
 ```
 
 ## 🛠️ Tecnologias
@@ -203,19 +209,33 @@ backend/
 ```
 frontend/
 ├── src/
-│   ├── components/
-│   │   ├── FileUpload.tsx       # Upload de arquivos
-│   │   ├── DataTable.tsx        # Tabela de resultados
-│   │   └── History.tsx          # Histórico
+│   ├── pages/                      # Páginas da aplicação
+│   │   ├── HomePage.tsx            # Landing page
+│   │   ├── UploadPage.tsx          # Upload de arquivos
+│   │   ├── ResultsPage.tsx         # Tabela de resultados
+│   │   └── HistoryPage.tsx         # Histórico
+│   ├── hooks/                      # Custom Hooks
+│   │   ├── useProcessedData.ts     # Hook de dados processados
+│   │   ├── useApiHealth.ts         # Hook de health check
+│   │   └── index.ts                # Export de hooks
+│   ├── utils/                      # Funções utilitárias
+│   │   ├── fileValidation.ts       # Validação de arquivos
+│   │   ├── dateFormat.ts           # Formatação de datas
+│   │   ├── exportExcel.ts          # Export para Excel
+│   │   └── index.ts                # Export de utils
+│   ├── constants/                  # Constantes
+│   │   └── index.ts                # Config, mensagens, views
 │   ├── services/
-│   │   └── api.ts               # Cliente API
+│   │   └── api.ts                  # Cliente API
 │   ├── types/
-│   │   └── index.ts             # TypeScript types
-│   ├── App.tsx                  # Componente principal
-│   ├── App.css                  # Estilos
-│   ├── main.tsx                 # Entry point
-│   └── index.css                # Estilos globais
+│   │   └── index.ts                # TypeScript types
+│   ├── styles/                     # Estilos organizados
+│   ├── App.tsx                     # Componente principal
+│   ├── App.css                     # Estilos do app
+│   ├── main.tsx                    # Entry point
+│   └── index.css                   # Estilos globais
 ├── public/
+│   ├── videos/                     # Vídeos para background
 │   └── manifest.json
 ├── index.html
 ├── package.json
@@ -272,15 +292,49 @@ frontend/
 
 ## 🎨 Funcionalidades do Frontend
 
-- ✨ Interface moderna e responsiva
-- 🎯 Drag & drop para upload de arquivos
-- 📊 Visualização em tabela dos dados processados
-- 📈 Estatísticas em tempo real
-- 🔔 Notificações toast para feedback
-- 💾 Duas opções de exportação (servidor e local)
-- 📜 Histórico com paginação
-- 🗑️ Exclusão de registros com confirmação
-- 📱 Design responsivo para mobile
+- ✨ **Interface moderna e responsiva** - Design minimalista azul/branco/amarelo
+- 🏠 **Landing Page** - Página inicial com vídeo de fundo animado
+- 🎯 **Drag & drop** - Upload de arquivos intuitivo
+- 📊 **Visualização em tabela** - Dados processados com estatísticas
+- 📈 **Estatísticas em tempo real** - Total original, agrupado e economia
+- 🔔 **Notificações toast** - Feedback visual consistente
+- 💾 **Duas opções de exportação** - Servidor e local
+- 📜 **Histórico com paginação** - Visualização de processamentos anteriores
+- 🗑️ **Exclusão de registros** - Com confirmação de segurança
+- 📱 **Design responsivo** - Funciona em mobile e desktop
+- 🎬 **Vídeo Background** - Animação sutil na home page
+- 🧩 **Arquitetura modular** - Código organizado e manutenível
+
+### Arquitetura Frontend
+
+O código frontend foi completamente refatorado para facilitar manutenção:
+
+**Pages (Páginas):**
+- Cada página é um componente independente
+- Lógica isolada e reutilizável
+- Props bem definidas
+
+**Hooks (Custom Hooks):**
+- `useProcessedData`: Gerencia estado de dados processados
+- `useApiHealth`: Verifica saúde da API na inicialização
+
+**Utils (Utilitários):**
+- `fileValidation`: Validação de arquivos Excel
+- `dateFormat`: Formatação de datas PT-BR
+- `exportExcel`: Geração de arquivos Excel
+
+**Constants (Constantes):**
+- Configurações centralizadas
+- Mensagens de erro/sucesso
+- Tipos de views
+- Limites e validações
+
+**Benefícios da refatoração:**
+- ✅ Fácil de testar
+- ✅ Fácil de estender
+- ✅ Fácil de manter
+- ✅ Código DRY (Don't Repeat Yourself)
+- ✅ TypeScript type-safe
 
 ## 🔒 Segurança
 
@@ -332,16 +386,6 @@ error TS1484: Type import
 - ✅ Upload e exportação de Excel
 - ✅ Histórico com paginação
 - ✅ Interface responsiva
-
-## 🤝 Contribuindo
-
-Contribuições são bem-vindas! Por favor:
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
-4. Push para a branch (`git push origin feature/MinhaFeature`)
-5. Abra um Pull Request
 
 ## 📄 Licença
 
