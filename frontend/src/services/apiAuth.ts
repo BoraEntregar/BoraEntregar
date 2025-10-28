@@ -11,7 +11,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 /**
  * Cria uma instância do axios com autenticação
  */
-export const createAuthenticatedApi = (getAccessToken: () => Promise<string>) => {
+export const createAuthenticatedApi = (getAccessToken: (options?: any) => Promise<string>) => {
   const api = axios.create({
     baseURL: API_BASE_URL,
     headers: {
@@ -23,7 +23,12 @@ export const createAuthenticatedApi = (getAccessToken: () => Promise<string>) =>
   api.interceptors.request.use(
     async (config) => {
       try {
-        const token = await getAccessToken();
+        const token = await getAccessToken({
+          authorizationParams: {
+            audience: import.meta.env.VITE_AUTH0_AUDIENCE || 'https://api.boraentregar.com.br',
+          }
+        });
+
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -42,12 +47,6 @@ export const createAuthenticatedApi = (getAccessToken: () => Promise<string>) =>
     (response) => response,
     (error) => {
       const errorMessage = error.response?.data?.message || 'Erro ao comunicar com o servidor';
-
-      // Se erro 401, o usuário não está autenticado
-      if (error.response?.status === 401) {
-        console.error('Usuário não autenticado. Faça login novamente.');
-      }
-
       return Promise.reject(new Error(errorMessage));
     }
   );

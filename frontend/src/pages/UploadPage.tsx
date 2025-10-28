@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import toast from 'react-hot-toast';
-import { excelService } from '../services/api';
 import type { ProcessExcelResponse } from '../types';
 import { validateFile, formatFileSize } from '../utils';
 import { MESSAGES } from '../constants';
 
 interface UploadPageProps {
   onSuccess: (data: ProcessExcelResponse['data']) => void;
+  excelService: {
+    processExcel: (file: File, routeName: string) => Promise<ProcessExcelResponse>;
+  };
 }
 
-export default function UploadPage({ onSuccess }: UploadPageProps) {
+export default function UploadPage({ onSuccess, excelService }: UploadPageProps) {
   const [file, setFile] = useState<File | null>(null);
   const [routeName, setRouteName] = useState('');
   const [loading, setLoading] = useState(false);

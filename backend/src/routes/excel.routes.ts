@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { ExcelController } from '../controllers/excelController';
 import { upload } from '../middleware/upload';
-import { requireAuth } from '../middleware/auth';
+import { validateAccessToken, requireAuth, extractUserId } from '../middleware/auth';
 
 const router = Router();
 
@@ -10,34 +10,34 @@ const router = Router();
  * @desc    Processa arquivo Excel e agrupa dados
  * @access  Private (requires authentication)
  */
-router.post('/process', requireAuth, upload.single('file'), ExcelController.processExcel);
+router.post('/process', validateAccessToken, requireAuth, extractUserId, upload.single('file'), ExcelController.processExcel);
 
 /**
  * @route   POST /api/excel/export
  * @desc    Exporta dados processados em formato Excel
  * @access  Private (requires authentication)
  */
-router.post('/export', requireAuth, ExcelController.exportExcel);
+router.post('/export', validateAccessToken, requireAuth, extractUserId, ExcelController.exportExcel);
 
 /**
  * @route   GET /api/excel/history
  * @desc    Lista histórico de processamentos
  * @access  Private (requires authentication)
  */
-router.get('/history', requireAuth, ExcelController.getHistory);
+router.get('/history', validateAccessToken, requireAuth, extractUserId, ExcelController.getHistory);
 
 /**
  * @route   GET /api/excel/history/:id
  * @desc    Busca processamento específico por ID
  * @access  Private (requires authentication)
  */
-router.get('/history/:id', requireAuth, ExcelController.getById);
+router.get('/history/:id', validateAccessToken, requireAuth, extractUserId, ExcelController.getById);
 
 /**
  * @route   DELETE /api/excel/history/:id
  * @desc    Deleta processamento por ID
  * @access  Private (requires authentication)
  */
-router.delete('/history/:id', requireAuth, ExcelController.deleteById);
+router.delete('/history/:id', validateAccessToken, requireAuth, extractUserId, ExcelController.deleteById);
 
 export default router;
