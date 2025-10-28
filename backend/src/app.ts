@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import excelRoutes from './routes/excel.routes';
-import { auth, authConfig, extractUserId, requireAuth } from './middleware/auth';
+import { validateAccessToken, extractUserId, requireAuth } from './middleware/auth';
 
 const app: Application = express();
 
@@ -30,9 +30,6 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Auth0 middleware - attaches /login, /logout, and /callback routes
-app.use(auth(authConfig));
-
 // Extract user ID from authenticated requests
 app.use(extractUserId);
 
@@ -46,21 +43,18 @@ app.get('/health', (_req: Request, res: Response) => {
 });
 
 // Rota de perfil do usuário (protegida)
-app.get('/api/profile', requireAuth, (req: Request, res: Response) => {
-  const user = (req as any).oidc?.user;
+app.get('/api/profile', validateAccessToken, requireAuth, (req: Request, res: Response) => {
   const userId = (req as any).userId;
   const userEmail = (req as any).userEmail;
+  const auth = (req as any).auth;
 
   res.status(200).json({
     success: true,
     profile: {
       userId,
       email: userEmail,
-      name: user?.name,
-      picture: user?.picture,
-      nickname: user?.nickname,
-      updatedAt: user?.updated_at,
-      sub: user?.sub
+      sub: auth?.payload?.sub,
+      permissions: auth?.payload?.permissions || []
     }
   });
 });

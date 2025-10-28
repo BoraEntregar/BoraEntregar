@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { saveAs } from 'file-saver';
 import toast from 'react-hot-toast';
-import { excelService } from '../services/api';
 import type { GroupedData } from '../types';
 
 interface DataTableProps {
@@ -14,9 +13,12 @@ interface DataTableProps {
     data: GroupedData[];
     processedAt: string;
   };
+  excelService: {
+    exportExcel: (processedDataId: string) => Promise<Blob>;
+  };
 }
 
-export default function DataTable({ data }: DataTableProps) {
+export default function DataTable({ data, excelService }: DataTableProps) {
   const [exporting, setExporting] = useState(false);
 
   // Debug - ver o que está chegando

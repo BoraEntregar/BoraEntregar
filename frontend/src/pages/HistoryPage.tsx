@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
-import { excelService } from '../services/api';
 import toast from 'react-hot-toast';
-import type { HistoryItem } from '../types';
+import type { HistoryItem, HistoryResponse } from '../types';
 
 interface HistoryProps {
   onViewDetails: (id: string) => void;
+  excelService: {
+    getHistory: (page: number, limit: number) => Promise<HistoryResponse>;
+    deleteById: (id: string) => Promise<{ success: boolean; message: string }>;
+  };
 }
 
-export default function History({ onViewDetails }: HistoryProps) {
+export default function History({ onViewDetails, excelService }: HistoryProps) {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
