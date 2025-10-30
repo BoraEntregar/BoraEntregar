@@ -42,6 +42,7 @@ const ProcessedDataSchema: Schema = new Schema({
   },
   data: [{
     sequence: { type: String, required: true },
+    packageCode: { type: String, required: true },
     destinationAddress: { type: String, required: true },
     bairro: { type: String },
     city: { type: String },

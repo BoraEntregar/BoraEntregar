@@ -13,6 +13,7 @@ export const exportToExcel = ({ routeName, data }: ExportData): void => {
   // Preparar dados para export
   const exportData = (data || []).map((row, index) => ({
     'Sequência': row.sequence || index + 1,
+    'Código do Pacote': row.packageCode || '',
     'Endereço': row.destinationAddress,
     'Bairro': row.bairro || '',
     'Cidade': row.city || '',
@@ -29,6 +30,7 @@ export const exportToExcel = ({ routeName, data }: ExportData): void => {
   // Ajustar largura das colunas
   const colWidths = [
     { wch: 12 }, // Sequência
+    { wch: 20 }, // Código do Pacote
     { wch: 50 }, // Endereço
     { wch: 20 }, // Bairro
     { wch: 20 }, // Cidade

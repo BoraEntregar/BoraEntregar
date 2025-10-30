@@ -96,11 +96,11 @@ export default function DataTable({ data, excelService }: DataTableProps) {
           </div>
           <div className="stats">
             <div className="stat">
-              <span className="stat-label">Total Original</span>
+              <span className="stat-label">Paradas Originais</span>
               <span className="stat-value">{data.totalRows}</span>
             </div>
             <div className="stat">
-              <span className="stat-label">Total Agrupado</span>
+              <span className="stat-label">Paradas Otimizadas</span>
               <span className="stat-value success">{data.groupedRows}</span>
             </div>
             <div className="stat">
@@ -141,7 +141,8 @@ export default function DataTable({ data, excelService }: DataTableProps) {
         <table className="data-table">
           <thead>
             <tr>
-              <th>Seq.</th>
+              <th>Sequência</th>
+              <th>SPX TN</th>
               <th>Endereço de Destino</th>
               <th>Bairro</th>
               <th>Cidade</th>
@@ -154,6 +155,9 @@ export default function DataTable({ data, excelService }: DataTableProps) {
             {(data.data || []).map((row, index) => (
               <tr key={index}>
                 <td className="seq">{row.sequence || index + 1}</td>
+                <td className="package-code" title={row.packageCode || '-'}>
+                  {row.packageCode ? row.packageCode.replace(/;\s*/g, '\n') : '-'}
+                </td>
                 <td className="address">{row.destinationAddress}</td>
                 <td>{row.bairro || '-'}</td>
                 <td>{row.city || '-'}</td>

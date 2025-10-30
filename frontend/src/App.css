@@ -699,6 +699,19 @@
   width: 80px;
 }
 
+.data-table .package-code {
+  font-family: 'Courier New', monospace;
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-700);
+  font-weight: 600;
+  width: 180px;
+  max-width: 180px;
+  white-space: pre-line;
+  word-break: break-word;
+  line-height: 1.6;
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
 .data-table .address {
   font-weight: 500;
   color: var(--color-gray-900);

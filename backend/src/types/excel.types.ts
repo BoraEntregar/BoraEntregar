@@ -1,6 +1,7 @@
 // Interface para representar uma linha do Excel
 export interface ExcelRow {
   sequence: string;
+  packageCode: string; // Código do pacote (ex: SPX TN)
   destinationAddress: string;
   bairro: string;
   city: string;
@@ -12,6 +13,7 @@ export interface ExcelRow {
 // Interface para dados agrupados
 export interface GroupedData {
   sequence: string; // Múltiplas sequências separadas por "; "
+  packageCode: string; // Códigos dos pacotes separados por "; "
   destinationAddress: string;
   bairro: string;
   city: string;

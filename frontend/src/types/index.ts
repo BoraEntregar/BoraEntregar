@@ -1,6 +1,7 @@
 // Tipos para dados do Excel
 export interface ExcelRow {
   sequence: string;
+  packageCode: string;
   destinationAddress: string;
   bairro?: string;
   city?: string;
@@ -12,6 +13,7 @@ export interface ExcelRow {
 // Tipos para dados agrupados
 export interface GroupedData {
   sequence: string;
+  packageCode: string;
   destinationAddress: string;
   bairro?: string;
   city?: string;
