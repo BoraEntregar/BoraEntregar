@@ -39,7 +39,7 @@ export const exportToExcel = ({ routeName, data }: ExportData): void => {
   ws['!cols'] = colWidths;
 
   // Exportar
-  const fileName = `${routeName.replace(/[^a-z0-9]/gi, '_')}_processado.xlsx`;
+  const fileName = `BORAENTREGAR_${routeName.replace(/[^a-z0-9]/gi, '_')}.xlsx`;
   XLSX.writeFile(wb, fileName);
 };
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { saveAs } from 'file-saver';
 import toast from 'react-hot-toast';
 import type { GroupedData } from '../types';
+import { useUserProfile } from '../hooks/useUserProfile';
 
 interface DataTableProps {
   data: {
@@ -20,6 +21,7 @@ interface DataTableProps {
 
 export default function DataTable({ data, excelService }: DataTableProps) {
   const [exporting, setExporting] = useState(false);
+  const { profile } = useUserProfile();
 
   // Debug - ver o que está chegando
   console.log('DataTable recebeu data:', data);
@@ -51,7 +53,7 @@ export default function DataTable({ data, excelService }: DataTableProps) {
     setExporting(true);
     try {
       const blob = await excelService.exportExcel(data._id);
-      const fileName = `${data.routeName.replace(/[^a-z0-9]/gi, '_')}_processado.xlsx`;
+      const fileName = `BORAENTREGAR_${data.routeName.replace(/[^a-z0-9]/gi, '_')}.xlsx`;
       saveAs(blob, fileName);
       toast.success('Arquivo exportado com sucesso!');
     } catch (error) {
@@ -77,13 +79,13 @@ export default function DataTable({ data, excelService }: DataTableProps) {
       {/* Header com informações */}
       <div className="table-header">
         <div className="header-info">
-          <h2>{data.routeName}</h2>
+          <h2>{(profile?.name || 'Usuário').toUpperCase()}</h2>
           <div className="metadata">
             <span className="badge">
               <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              {data.originalFileName}
+              {data.routeName}
             </span>
             <span className="badge">
               <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">

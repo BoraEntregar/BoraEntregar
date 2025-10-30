@@ -14,7 +14,6 @@ interface UploadPageProps {
 
 export default function UploadPage({ onSuccess, excelService }: UploadPageProps) {
   const [file, setFile] = useState<File | null>(null);
-  const [routeName, setRouteName] = useState('');
   const [loading, setLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
 
@@ -77,15 +76,12 @@ export default function UploadPage({ onSuccess, excelService }: UploadPageProps)
       return;
     }
 
-    if (!routeName.trim()) {
-      toast.error(MESSAGES.ERROR.NO_ROUTE_NAME);
-      return;
-    }
-
     setLoading(true);
 
     try {
-      const response = await excelService.processExcel(file, routeName.trim());
+      // Usar o nome do arquivo (sem extensão) como nome da rota
+      const routeName = file.name.replace(/\.[^/.]+$/, '');
+      const response = await excelService.processExcel(file, routeName);
 
       if (response.success && response.data) {
         toast.success(response.message || MESSAGES.SUCCESS.FILE_UPLOADED);
@@ -93,7 +89,6 @@ export default function UploadPage({ onSuccess, excelService }: UploadPageProps)
 
         // Limpar formulário
         setFile(null);
-        setRouteName('');
 
         // Limpar input de arquivo
         const fileInput = document.getElementById('file-input') as HTMLInputElement;
@@ -113,20 +108,6 @@ export default function UploadPage({ onSuccess, excelService }: UploadPageProps)
       <h2>Enviar Planilha</h2>
 
       <form onSubmit={handleSubmit} className="upload-form">
-        {/* Campo de nome da rota */}
-        <div className="form-group">
-          <label htmlFor="route-name">Nome da Rota *</label>
-          <input
-            type="text"
-            id="route-name"
-            value={routeName}
-            onChange={(e) => setRouteName(e.target.value)}
-            placeholder="Ex: Rota Centro - 26/10/2024"
-            disabled={loading}
-            required
-          />
-        </div>
-
         {/* Área de drag and drop */}
         <div
           className={`drop-zone ${dragActive ? 'active' : ''} ${file ? 'has-file' : ''}`}
@@ -174,7 +155,7 @@ export default function UploadPage({ onSuccess, excelService }: UploadPageProps)
         <button
           type="submit"
           className="btn-submit"
-          disabled={loading || !file || !routeName.trim()}
+          disabled={loading || !file}
         >
           {loading ? (
             <>

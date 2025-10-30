@@ -115,7 +115,6 @@ export default function History({ onViewDetails, excelService }: HistoryProps) {
 
                 <div className="item-info">
                   <h3>{item.routeName}</h3>
-                  <p className="filename">{item.originalFileName}</p>
                   <div className="item-meta">
                     <span className="meta-item">
                       <svg className="icon small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
