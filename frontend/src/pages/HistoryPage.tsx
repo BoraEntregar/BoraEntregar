@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import type { HistoryItem, HistoryResponse } from '../types';
 
+
 interface HistoryProps {
   onViewDetails: (id: string) => void;
   excelService: {
     getHistory: (page: number, limit: number) => Promise<HistoryResponse>;
     deleteById: (id: string) => Promise<{ success: boolean; message: string }>;
+    exportExcel: (processedDataId: string) => Promise<Blob>;
   };
 }
 
@@ -52,6 +54,33 @@ export default function History({ onViewDetails, excelService }: HistoryProps) {
       loadHistory(newPage);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Erro ao excluir registro');
+    }
+  };
+
+  const handleExport = async (id: string, routeName: string) => {
+    try {
+      toast.loading('Exportando arquivo...', { id: 'export' });
+
+      // Chama o serviço para obter o arquivo
+      const blob = await excelService.exportExcel(id);
+
+      // Cria um link temporário para download
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `BORAENTREGAR_${routeName.replace(/[^a-z0-9]/gi, '_')}.xlsx`;
+
+      // Aciona o download
+      document.body.appendChild(link);
+      link.click();
+
+      // Limpa recursos
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast.success('Arquivo exportado com sucesso!', { id: 'export' });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Erro ao exportar arquivo', { id: 'export' });
     }
   };
 
@@ -126,7 +155,7 @@ export default function History({ onViewDetails, excelService }: HistoryProps) {
                       <svg className="icon small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                       </svg>
-                      {item.totalRows} → {item.groupedRows} linhas
+                      {item.totalRows} → {item.groupedRows} paradas
                     </span>
                   </div>
                 </div>
@@ -142,6 +171,16 @@ export default function History({ onViewDetails, excelService }: HistoryProps) {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
                     Ver Detalhes
+                  </button>
+                  <button
+                    onClick={() => handleExport(item._id, item.routeName)}
+                    className="btn-action"
+                    style={{ backgroundColor: '#f59e0b', color: 'white' }}
+                    title="Exportar para Excel"
+                  >
+                    <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
                   </button>
                   <button
                     onClick={() => handleDelete(item._id, item.routeName)}

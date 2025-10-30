@@ -12,20 +12,35 @@ export class ExcelProcessor {
     const workbook = XLSX.read(buffer, { type: 'buffer' });
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
-    
+
     // Converter para JSON
     const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
-    
+
     // Mapear para interface ExcelRow
-    const excelRows: ExcelRow[] = jsonData.map((row: any) => ({
-      sequence: String(row['Sequence'] || row['sequence'] || ''),
-      destinationAddress: String(row['Destination Address'] || row['destinationAddress'] || ''),
-      bairro: String(row['Bairro'] || row['bairro'] || ''),
-      city: String(row['City'] || row['city'] || ''),
-      zipcode: String(row['Zipcode/Postal code'] || row['Zipcode'] || row['zipcode'] || ''),
-      latitude: String(row['Latitude'] || row['latitude'] || ''),
-      longitude: String(row['Longitude'] || row['longitude'] || '')
-    }));
+    const excelRows: ExcelRow[] = jsonData.map((row: any) => {
+      // Buscar o código do pacote em várias possíveis colunas
+      const packageCode = String(
+        row['SPX TN'] ||
+        row['Package Code'] ||
+        row['packageCode'] ||
+        row['SPX_TN'] ||
+        row['spx_tn'] ||
+        row['SPXTN'] ||
+        row['spxtn'] ||
+        ''
+      );
+
+      return {
+        sequence: String(row['Sequence'] || row['sequence'] || ''),
+        packageCode,
+        destinationAddress: String(row['Destination Address'] || row['destinationAddress'] || ''),
+        bairro: String(row['Bairro'] || row['bairro'] || ''),
+        city: String(row['City'] || row['city'] || ''),
+        zipcode: String(row['Zipcode/Postal code'] || row['Zipcode'] || row['zipcode'] || ''),
+        latitude: String(row['Latitude'] || row['latitude'] || ''),
+        longitude: String(row['Longitude'] || row['longitude'] || '')
+      };
+    });
 
     return excelRows;
   }
@@ -75,13 +90,15 @@ export class ExcelProcessor {
       const groupKey = `${latitudeKey}_${longitudeKey}_${addressNumber}`;
 
       if (groupedMap.has(groupKey)) {
-        // Se já existe, concatena a sequence
+        // Se já existe, concatena a sequence e packageCode
         const existing = groupedMap.get(groupKey)!;
         existing.sequence += `; ${row.sequence}`;
+        existing.packageCode += `; ${row.packageCode}`;
       } else {
         // Cria nova entrada
         groupedMap.set(groupKey, {
           sequence: row.sequence,
+          packageCode: row.packageCode,
           destinationAddress: row.destinationAddress,
           bairro: row.bairro,
           city: row.city,
@@ -108,6 +125,7 @@ export class ExcelProcessor {
     // Mapear dados para formato do Excel
     const worksheetData = data.map(row => ({
       'Sequencia': row.sequence,
+      'Package Code': row.packageCode,
       'Destination Address': row.destinationAddress,
       'Bairro': row.bairro,
       'City': row.city,
