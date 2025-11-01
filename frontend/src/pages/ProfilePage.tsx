@@ -70,13 +70,6 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {profile.nickname && (
-              <div className="profile-info-item">
-                <label>Apelido</label>
-                <div className="profile-info-value">{profile.nickname}</div>
-              </div>
-            )}
-
             <div className="profile-info-item">
               <label>ID do Usuário</label>
               <div className="profile-info-value profile-id">
@@ -107,8 +100,8 @@ export default function ProfilePage() {
                   d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <div className="stat-label">Segurança</div>
-              <div className="stat-value">Autenticado</div>
+              <div className="stat-label">Em breve</div>
+              <div className="stat-value">Em breve</div>
             </div>
 
             <div className="stat-card">
@@ -125,8 +118,8 @@ export default function ProfilePage() {
                   d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                 />
               </svg>
-              <div className="stat-label">Privacidade</div>
-              <div className="stat-value">Protegido</div>
+              <div className="stat-label">Em breve</div>
+              <div className="stat-value">Em breve</div>
             </div>
 
             <div className="stat-card">
@@ -143,8 +136,8 @@ export default function ProfilePage() {
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
               </svg>
-              <div className="stat-label">Dados</div>
-              <div className="stat-value">Isolados</div>
+              <div className="stat-label">Em Breve</div>
+              <div className="stat-value">Em breve</div>
             </div>
           </div>
         </div>
