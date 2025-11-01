@@ -7,7 +7,7 @@ export const APP_DESCRIPTION = 'Sistema de Agrupamento de Rotas de Entrega';
 export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 // File Upload Configuration
-export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+export const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
 export const ALLOWED_FILE_TYPES = ['.xlsx', '.xls'];
 export const ALLOWED_MIME_TYPES = [
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
