@@ -39,3 +39,16 @@ tmp/
 
 # Uploads temporários
 uploads/
+
+# Docker
+docker-compose.override.yml
+
+# Nginx
+nginx/logs/
+nginx/ssl/*.pem
+nginx/ssl/*.key
+
+# Backups
+*.sql
+*.dump
+backups/
