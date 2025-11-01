@@ -145,7 +145,7 @@ export default function UploadPage({ onSuccess, excelService }: UploadPageProps)
                 <button type="button" className="btn-browse" onClick={handleBrowseClick}>
                   Procurar arquivo
                 </button>
-                <p className="file-info">Formatos aceitos: .xlsx, .xls (máx. 10MB)</p>
+                <p className="file-info">Formatos aceitos: .xlsx, .xls (máx. 1MB)</p>
               </>
             )}
           </label>
