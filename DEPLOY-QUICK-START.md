@@ -53,15 +53,19 @@ MONGODB_URI_DEV=mongodb+srv://user:pass@cluster.mongodb.net/boraentregar-dev
 FRONTEND_URL_MAIN=https://boraentregar.vercel.app
 FRONTEND_URL_DEV=https://boraentregar-dev.vercel.app
 
-# Backend URLs (substitua pelo seu domínio ou IP)
+# Auth0 - Main (Produção)
 AUTH0_BASE_URL_MAIN=https://api.seu-dominio.com
-AUTH0_BASE_URL_DEV=https://api-dev.seu-dominio.com
+AUTH0_CLIENT_ID_MAIN=seu_client_id_main
+AUTH0_CLIENT_SECRET_MAIN=seu_client_secret_main
+AUTH0_ISSUER_BASE_URL_MAIN=https://seu-tenant.us.auth0.com
+AUTH0_AUDIENCE_MAIN=https://api.boraentregar.com.br
 
-# Auth0
-AUTH0_CLIENT_ID=seu_client_id
-AUTH0_CLIENT_SECRET=seu_client_secret
-AUTH0_ISSUER_BASE_URL=https://seu-tenant.us.auth0.com
-AUTH0_AUDIENCE=https://api.boraentregar.com.br
+# Auth0 - Dev (Desenvolvimento)
+AUTH0_BASE_URL_DEV=https://api-dev.seu-dominio.com
+AUTH0_CLIENT_ID_DEV=seu_client_id_dev
+AUTH0_CLIENT_SECRET_DEV=seu_client_secret_dev
+AUTH0_ISSUER_BASE_URL_DEV=https://seu-tenant-dev.us.auth0.com
+AUTH0_AUDIENCE_DEV=https://api-dev.boraentregar.com.br
 ```
 
 ### 3️⃣ Configurar DNS (Opcional)

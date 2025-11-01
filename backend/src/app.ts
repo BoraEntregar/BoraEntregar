@@ -17,12 +17,19 @@ app.use(cors({
     // Permite requisições sem origin (mobile apps, Postman, etc)
     if (!origin) return callback(null, true);
 
+    // Verificar se a origin está na lista de origens permitidas
     if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`⚠️  CORS blocked request from origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
+      return callback(null, true);
     }
+
+    // Permitir qualquer subdomínio do Vercel (bora-entregar-*.vercel.app)
+    if (origin.match(/^https:\/\/bora-entregar.*\.vercel\.app$/)) {
+      return callback(null, true);
+    }
+
+    // Bloquear outras origens
+    console.warn(`⚠️  CORS blocked request from origin: ${origin}`);
+    callback(new Error('Not allowed by CORS'));
   },
   credentials: true
 }));
