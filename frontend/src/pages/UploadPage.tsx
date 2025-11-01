@@ -105,7 +105,7 @@ export default function UploadPage({ onSuccess, excelService }: UploadPageProps)
 
   return (
     <div className="file-upload-container">
-      <h2>Enviar Planilha</h2>
+      <h2>Enviar Arquivo</h2>
 
       <form onSubmit={handleSubmit} className="upload-form">
         {/* Área de drag and drop */}
@@ -140,7 +140,7 @@ export default function UploadPage({ onSuccess, excelService }: UploadPageProps)
                 <svg className="icon upload" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
-                <p>Arraste e solte seu arquivo Excel aqui</p>
+                <p>Arraste e solte seu arquivo aqui</p>
                 <p className="or">ou</p>
                 <button type="button" className="btn-browse" onClick={handleBrowseClick}>
                   Procurar arquivo
@@ -167,7 +167,7 @@ export default function UploadPage({ onSuccess, excelService }: UploadPageProps)
               <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              Processar Arquivo
+              Otimizar rota
             </>
           )}
         </button>
