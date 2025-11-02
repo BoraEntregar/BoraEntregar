@@ -45,24 +45,12 @@ jobs:
             # Navegar para o diretório do projeto
             cd ~/BoraEntregar || exit 1
 
-            # Fazer backup do .env antes de fazer pull
-            if [ -f .env ]; then
-              cp .env .env.backup
-              echo "✅ Backup do .env criado"
-            fi
-
             # Atualizar código do repositório
             echo "📥 Baixando atualizações do GitHub..."
             git fetch --all
             git checkout ${{ github.ref_name }}
-            git reset --hard origin/${{ github.ref_name }}
+            git pull origin ${{ github.ref_name }}
             echo "✅ Código atualizado (branch: ${{ github.ref_name }})"
-
-            # Restaurar .env se existir backup
-            if [ -f .env.backup ]; then
-              mv .env.backup .env
-              echo "✅ .env restaurado"
-            fi
 
             # Parar container antigo (se existir)
             echo "🛑 Parando container ${{ steps.set-env.outputs.service }}..."
