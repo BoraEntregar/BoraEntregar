@@ -1,5 +1,4 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { GroupedData } from '../types/excel.types';
 
 // Interface do documento MongoDB
 export interface IProcessedData extends Document {
@@ -9,7 +8,10 @@ export interface IProcessedData extends Document {
   originalFileName: string;
   totalRows: number;
   groupedRows: number;
-  data: GroupedData[];
+  filePath: string; // Caminho do arquivo Excel processado no disco
+  fileSize?: number; // Tamanho do arquivo em bytes (opcional)
+  createdAt: Date; // Timestamp de criação (auto-gerenciado pelo Mongoose)
+  updatedAt: Date; // Timestamp de atualização (auto-gerenciado pelo Mongoose)
 }
 
 // Schema do MongoDB
@@ -40,16 +42,14 @@ const ProcessedDataSchema: Schema = new Schema({
     type: Number,
     required: true
   },
-  data: [{
-    sequence: { type: String, required: true },
-    packageCode: { type: String, required: true },
-    destinationAddress: { type: String, required: true },
-    bairro: { type: String },
-    city: { type: String },
-    zipcode: { type: String },
-    latitude: { type: String, required: true },
-    longitude: { type: String, required: true }
-  }]
+  filePath: {
+    type: String,
+    required: true
+  },
+  fileSize: {
+    type: Number,
+    required: false
+  }
 }, {
   timestamps: true // Adiciona createdAt e updatedAt automaticamente
 });
