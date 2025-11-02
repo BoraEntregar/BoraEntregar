@@ -34,6 +34,13 @@ router.get('/history', validateAccessToken, requireAuth, extractUserId, ExcelCon
 router.get('/history/:id', validateAccessToken, requireAuth, extractUserId, ExcelController.getById);
 
 /**
+ * @route   GET /api/excel/download/:id
+ * @desc    Faz download de arquivo processado por ID
+ * @access  Private (requires authentication)
+ */
+router.get('/download/:id', validateAccessToken, requireAuth, extractUserId, ExcelController.downloadFile);
+
+/**
  * @route   DELETE /api/excel/history/:id
  * @desc    Deleta processamento por ID
  * @access  Private (requires authentication)
