@@ -15,44 +15,28 @@ export default function Home({ onGetStarted }: HomeProps) {
     const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
     setIsIOS(isIOSDevice);
 
-    console.log('User Agent:', userAgent);
-    console.log('Is iOS:', isIOSDevice);
-
     // Detecta se já está rodando como PWA (standalone)
     const isInStandaloneMode = ('standalone' in window.navigator && (window.navigator as any).standalone) ||
                                 window.matchMedia('(display-mode: standalone)').matches;
 
-    console.log('Is Standalone:', isInStandaloneMode);
-
     // Se é iOS e não está em standalone, mostra o botão
     if (isIOSDevice && !isInStandaloneMode) {
-      console.log('Mostrando botão para iOS');
       setShowInstallButton(true);
     }
 
     const handleBeforeInstallPrompt = (event: Event) => {
-      console.log('beforeinstallprompt event fired!');
-      // Previne o mini-infobar de aparecer automaticamente
       event.preventDefault();
-
-      // Salva o evento para usar depois
       setDeferredPrompt(event);
-
-      // Mostra o botão de instalação (para Chrome/Edge/Android)
       setShowInstallButton(true);
     };
 
     const handleAppInstalled = () => {
-      // Esconde o botão quando o app for instalado
       setShowInstallButton(false);
       setDeferredPrompt(null);
-      console.log('PWA foi instalado com sucesso');
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
-
-    console.log('Event listeners adicionados');
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -61,7 +45,6 @@ export default function Home({ onGetStarted }: HomeProps) {
   }, []);
 
   const handleInstallClick = async () => {
-    // Se é iOS, mostra instruções
     if (isIOS) {
       alert(
         'Para instalar o app no iOS:\n\n' +
@@ -72,20 +55,12 @@ export default function Home({ onGetStarted }: HomeProps) {
       return;
     }
 
-    // Para Chrome/Edge/Android
     if (!deferredPrompt) {
       return;
     }
 
-    // Mostra o prompt de instalação
     deferredPrompt.prompt();
-
-    // Aguarda a escolha do usuário
-    const { outcome } = await deferredPrompt.userChoice;
-
-    console.log(`Usuário ${outcome === 'accepted' ? 'aceitou' : 'recusou'} a instalação`);
-
-    // Limpa o deferredPrompt
+    await deferredPrompt.userChoice;
     setDeferredPrompt(null);
   };
 

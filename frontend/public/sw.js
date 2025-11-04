@@ -1,4 +1,4 @@
-// Service Worker simples para PWA
+// Service Worker para PWA - BoraEntregar
 const CACHE_NAME = 'boraentregar-v1';
 const urlsToCache = [
   '/',
@@ -6,27 +6,21 @@ const urlsToCache = [
   '/manifest.json'
 ];
 
-// Instalação do Service Worker
+// Instalação
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Instalando...');
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Service Worker: Cache aberto');
-        return cache.addAll(urlsToCache);
-      })
+      .then((cache) => cache.addAll(urlsToCache))
   );
 });
 
-// Ativação do Service Worker
+// Ativação e limpeza de cache antigo
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker: Ativando...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            console.log('Service Worker: Removendo cache antigo:', cacheName);
             return caches.delete(cacheName);
           }
         })
@@ -35,13 +29,10 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Interceptação de requisições
+// Interceptação de requisições - Network First
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Retorna do cache se disponível, senão busca da rede
-        return response || fetch(event.request);
-      })
+    fetch(event.request)
+      .catch(() => caches.match(event.request))
   );
 });
