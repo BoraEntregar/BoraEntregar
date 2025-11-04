@@ -179,7 +179,7 @@ export default function DataTable({ data, excelService }: DataTableProps) {
               <div className="mobile-card-codes">
                 <div className="mobile-card-codes-label">SEQ</div>
                 <div className="mobile-card-codes-value">
-                  #{row.sequence}
+                  {row.sequence ? `#${row.sequence}` : '-'}
                 </div>
               </div>
             </div>
