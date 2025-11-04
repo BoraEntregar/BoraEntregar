@@ -124,6 +124,15 @@ export default function Home({ onGetStarted }: HomeProps) {
               Começar Agora
             </button>
 
+            {showInstallButton && (
+              <button className="btn-secondary" onClick={handleInstallClick}>
+                <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                Instalar App
+              </button>
+            )}
+
             <button className="btn-secondary" onClick={() => {
               const featuresSection = document.getElementById('features');
               featuresSection?.scrollIntoView({ behavior: 'smooth' });
@@ -133,15 +142,6 @@ export default function Home({ onGetStarted }: HomeProps) {
               </svg>
               Saber Mais
             </button>
-
-            {showInstallButton && (
-              <button className="btn-secondary" onClick={handleInstallClick}>
-                <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                </svg>
-                Instalar App
-              </button>
-            )}
           </div>
         </div>
 
