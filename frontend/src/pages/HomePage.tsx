@@ -1,13 +1,61 @@
+import { useEffect, useState } from 'react';
+
 interface HomeProps {
   onGetStarted: () => void;
 }
 
 export default function Home({ onGetStarted }: HomeProps) {
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showInstallButton, setShowInstallButton] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (event: Event) => {
+      // Previne o mini-infobar de aparecer automaticamente
+      event.preventDefault();
+
+      // Salva o evento para usar depois
+      setDeferredPrompt(event);
+
+      // Mostra o botão de instalação
+      setShowInstallButton(true);
+    };
+
+    const handleAppInstalled = () => {
+      // Esconde o botão quando o app for instalado
+      setShowInstallButton(false);
+      setDeferredPrompt(null);
+      console.log('PWA foi instalado com sucesso');
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) {
+      return;
+    }
+
+    // Mostra o prompt de instalação
+    deferredPrompt.prompt();
+
+    // Aguarda a escolha do usuário
+    const { outcome } = await deferredPrompt.userChoice;
+
+    console.log(`Usuário ${outcome === 'accepted' ? 'aceitou' : 'recusou'} a instalação`);
+
+    // Limpa o deferredPrompt
+    setDeferredPrompt(null);
+  };
+
   return (
     <div className="home-container">
-      {/* Hero Section */}
       <section className="hero-section">
-        {/* Video Background */}
         <div className="video-background">
           <video
             autoPlay
@@ -58,6 +106,15 @@ export default function Home({ onGetStarted }: HomeProps) {
               </svg>
               Saber Mais
             </button>
+
+            {showInstallButton && (
+              <button className="btn-secondary" onClick={handleInstallClick}>
+                <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                Instalar App
+              </button>
+            )}
           </div>
         </div>
 
