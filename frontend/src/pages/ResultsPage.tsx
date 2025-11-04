@@ -177,9 +177,9 @@ export default function DataTable({ data, excelService }: DataTableProps) {
             <div className="mobile-card-header">
               <div className="mobile-card-seq">{row.sequence || index + 1}</div>
               <div className="mobile-card-codes">
-                <div className="mobile-card-codes-label">SPX TN</div>
+                <div className="mobile-card-codes-label">SEQ</div>
                 <div className="mobile-card-codes-value">
-                  {row.packageCode ? row.packageCode.replace(/;\s*/g, ', ') : '-'}
+                  #{row.sequence || index + 1}
                 </div>
               </div>
             </div>
@@ -197,13 +197,9 @@ export default function DataTable({ data, excelService }: DataTableProps) {
                 <span className="mobile-card-value">{row.city || '-'}</span>
               </div>
               <div className="mobile-card-row">
-                <span className="mobile-card-label">CEP</span>
-                <span className="mobile-card-value">{row.zipcode || '-'}</span>
-              </div>
-              <div className="mobile-card-row">
-                <span className="mobile-card-label">Coordenadas</span>
+                <span className="mobile-card-label">SPX TN</span>
                 <span className="mobile-card-value coord">
-                  {row.latitude}, {row.longitude}
+                  {row.packageCode ? row.packageCode.replace(/;\s*/g, ', ') : '-'}
                 </span>
               </div>
             </div>
