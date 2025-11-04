@@ -173,8 +173,7 @@ export default function DataTable({ data, excelService }: DataTableProps) {
       {/* Cards para Mobile */}
       <div className="mobile-cards">
         {(data.data || []).map((row, index) => {
-          // Debug para verificar o que vem em row
-          if (index === 0) console.log('Row data:', row);
+          console.log('Sequence value:', row.sequence, 'Type:', typeof row.sequence);
 
           return (
             <div key={index} className="mobile-card">
@@ -183,7 +182,7 @@ export default function DataTable({ data, excelService }: DataTableProps) {
                 <div className="mobile-card-codes">
                   <div className="mobile-card-codes-label">SEQ</div>
                   <div className="mobile-card-codes-value">
-                    {row.sequence ? `#${row.sequence}` : `[Debug: ${JSON.stringify(Object.keys(row))}]`}
+                    #{String(row.sequence || index + 1)}
                   </div>
                 </div>
               </div>
