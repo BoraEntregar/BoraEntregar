@@ -172,49 +172,39 @@ export default function DataTable({ data, excelService }: DataTableProps) {
 
       {/* Cards para Mobile */}
       <div className="mobile-cards">
-        {(data.data || []).map((row, index) => {
-          console.log('Sequence value:', row.sequence, 'Type:', typeof row.sequence);
-          console.log('PackageCode:', row.packageCode);
-
-          // Formatar a sequência para mostrar todos os números
-          const formattedSequence = row.sequence
-            ? String(row.sequence).split(/[;,]\s*/).map(s => `#${s.trim()}`).join('; ')
-            : `#${index + 1}`;
-
-          return (
-            <div key={index} className="mobile-card">
-              <div className="mobile-card-header">
-                <div className="mobile-card-seq">{index + 1}</div>
-                <div className="mobile-card-codes">
-                  <div className="mobile-card-codes-label">SEQ</div>
-                  <div className="mobile-card-codes-value">
-                    {formattedSequence}
-                  </div>
-                </div>
-              </div>
-              <div className="mobile-card-body">
-                <div className="mobile-card-row highlight">
-                  <span className="mobile-card-label">Endereço</span>
-                  <span className="mobile-card-value">{row.destinationAddress}</span>
-                </div>
-                <div className="mobile-card-row">
-                  <span className="mobile-card-label">Bairro</span>
-                  <span className="mobile-card-value">{row.bairro || '-'}</span>
-                </div>
-                <div className="mobile-card-row">
-                  <span className="mobile-card-label">Cidade</span>
-                  <span className="mobile-card-value">{row.city || '-'}</span>
-                </div>
-                <div className="mobile-card-row">
-                  <span className="mobile-card-label">SPX TN</span>
-                  <span className="mobile-card-value coord">
-                    {row.packageCode ? row.packageCode.replace(/;\s*/g, ', ') : '-'}
-                  </span>
+        {(data.data || []).map((row, index) => (
+          <div key={index} className="mobile-card">
+            <div className="mobile-card-header">
+              <div className="mobile-card-seq">{row.sequence || index + 1}</div>
+              <div className="mobile-card-codes">
+                <div className="mobile-card-codes-label">SEQ</div>
+                <div className="mobile-card-codes-value">
+                  #{row.sequence || index + 1}
                 </div>
               </div>
             </div>
-          );
-        })}
+            <div className="mobile-card-body">
+              <div className="mobile-card-row highlight">
+                <span className="mobile-card-label">Endereço</span>
+                <span className="mobile-card-value">{row.destinationAddress}</span>
+              </div>
+              <div className="mobile-card-row">
+                <span className="mobile-card-label">Bairro</span>
+                <span className="mobile-card-value">{row.bairro || '-'}</span>
+              </div>
+              <div className="mobile-card-row">
+                <span className="mobile-card-label">Cidade</span>
+                <span className="mobile-card-value">{row.city || '-'}</span>
+              </div>
+              <div className="mobile-card-row">
+                <span className="mobile-card-label">SPX TN</span>
+                <span className="mobile-card-value coord">
+                  {row.packageCode ? row.packageCode.replace(/;\s*/g, ', ') : '-'}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
       {(!data.data || data.data.length === 0) && (
