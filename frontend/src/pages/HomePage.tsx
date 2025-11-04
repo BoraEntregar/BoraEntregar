@@ -8,7 +8,6 @@ export default function Home({ onGetStarted }: HomeProps) {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showInstallButton, setShowInstallButton] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
-  const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
     // Detecta se é iOS
@@ -19,7 +18,6 @@ export default function Home({ onGetStarted }: HomeProps) {
     // Detecta se já está rodando como PWA (standalone)
     const isInStandaloneMode = ('standalone' in window.navigator && (window.navigator as any).standalone) ||
                                 window.matchMedia('(display-mode: standalone)').matches;
-    setIsStandalone(isInStandaloneMode);
 
     // Se é iOS e não está em standalone, mostra o botão
     if (isIOSDevice && !isInStandaloneMode) {
