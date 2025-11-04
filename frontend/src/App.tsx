@@ -120,14 +120,7 @@ function App() {
   // Mostrar loading enquanto verifica autenticação
   if (authLoading) {
     return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        fontSize: '1.2rem',
-        color: '#667eea'
-      }}>
+      <div className="auth-loading">
         Carregando...
       </div>
     );
@@ -160,20 +153,18 @@ function App() {
         }}
       />
 
-      {/* Navigation with Header */}
       <nav className="app-nav">
         <div className="nav-wrapper">
-          {/* Logo */}
+
           <div className="nav-logo">
             <img
               src="/imgs/BoraEntregar.svg"
               alt="BoraEntregar"
               onClick={() => setCurrentView(VIEWS.HOME)}
-              style={{ cursor: 'pointer' }}
+              className="clickable"
             />
           </div>
 
-          {/* Navigation Buttons */}
           <div className="nav-content">
             <button
               className={`nav-btn ${currentView === VIEWS.HOME ? 'active' : ''}`}
@@ -269,7 +260,6 @@ function App() {
         </div>
       </nav>
 
-      {/* Main Content */}
       <main className="app-main">
         {loading && (
           <div className="loading-overlay">
@@ -299,10 +289,30 @@ function App() {
         )}
       </main>
 
-      {/* Footer */}
       <footer className="app-footer">
-        <p>{APP_NAME} - {APP_DESCRIPTION}</p>
-        <p className="version">{APP_VERSION}</p>
+        <div className="footer-top">
+          <p>{APP_NAME} - {APP_DESCRIPTION}</p>
+        </div>
+
+        <div className="footer-beta">
+          <svg className="warning-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M10.29 3.86L1.82 18a1 1 0 00.86 1.5h18.64a1 1 0 00.86-1.5L13.71 3.86a1 1 0 00-1.71 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+
+          <span className="beta-text">
+            Estamos em beta — se alguma funcionalidade não funcionar, entre em contato:
+          </span>
+          <a href="mailto:contato@boraentregar.com.br" className="beta-link">
+            contato@boraentregar.com.br
+          </a>
+          <span className="beta-text">ou</span>
+          <a href="https://wa.me/5521964166523?text=Ol%C3%A1%2C%20estou%20usando%20o%20BoraEntregar%20e%20encontrei%20um%20problema!" target="_blank" rel="noopener noreferrer" className="beta-link whatsapp" aria-label="Abrir WhatsApp">
+            WhatsApp
+          </a>
+        </div>
+        <p className="version">BETA {APP_VERSION}</p>
       </footer>
     </div>
   );

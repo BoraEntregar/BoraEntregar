@@ -289,6 +289,61 @@
   font-weight: 600;
 }
 
+/* Footer — mensagens de beta e contatos */
+.footer-top {
+  display: block;
+}
+
+.footer-beta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-beta .warning-icon {
+  color: #f59e0b; /* amarelo/alarme */
+  width: 18px;
+  height: 18px;
+}
+
+.footer-beta .beta-text {
+  font-size: 0.95rem;
+  color: #374151; /* cinza escuro */
+  text-align: center;
+}
+
+.footer-beta .beta-link {
+  color: #2563eb; /* azul primário */
+  text-decoration: underline;
+}
+
+.footer-beta .beta-link.whatsapp {
+  color: #16a34a; /* verde WhatsApp */
+}
+
+.app-footer .version {
+  text-align: center;
+  margin-top: 0.25rem;
+}
+
+/* Auth Loading State */
+.auth-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 1.2rem;
+  color: #667eea;
+}
+
+/* Logo Cursor */
+.nav-logo img.clickable {
+  cursor: pointer;
+}
+
 /* File Upload Component - Design Simples e Clean */
 .file-upload-container {
   background: var(--color-white);
@@ -1485,8 +1540,8 @@
   position: absolute;
   top: var(--spacing-lg);
   right: var(--spacing-lg);
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
