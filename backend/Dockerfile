@@ -33,6 +33,10 @@ RUN npm install --omit=dev && \
 # Copiar build do stage anterior
 COPY --from=builder /app/dist ./dist
 
+# Criar diretório de uploads e dar permissões corretas
+RUN mkdir -p /app/uploads/processed && \
+    chown -R nodejs:nodejs /app/uploads
+
 # Mudar para usuário não-root
 USER nodejs
 
