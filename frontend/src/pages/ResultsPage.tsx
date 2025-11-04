@@ -174,6 +174,12 @@ export default function DataTable({ data, excelService }: DataTableProps) {
       <div className="mobile-cards">
         {(data.data || []).map((row, index) => {
           console.log('Sequence value:', row.sequence, 'Type:', typeof row.sequence);
+          console.log('PackageCode:', row.packageCode);
+
+          // Formatar a sequência para mostrar todos os números
+          const formattedSequence = row.sequence
+            ? String(row.sequence).split(/[;,]\s*/).map(s => `#${s.trim()}`).join('; ')
+            : `#${index + 1}`;
 
           return (
             <div key={index} className="mobile-card">
@@ -182,7 +188,7 @@ export default function DataTable({ data, excelService }: DataTableProps) {
                 <div className="mobile-card-codes">
                   <div className="mobile-card-codes-label">SEQ</div>
                   <div className="mobile-card-codes-value">
-                    #{String(row.sequence || index + 1)}
+                    {formattedSequence}
                   </div>
                 </div>
               </div>
