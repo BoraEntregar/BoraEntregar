@@ -175,11 +175,11 @@ export default function DataTable({ data, excelService }: DataTableProps) {
         {(data.data || []).map((row, index) => (
           <div key={index} className="mobile-card">
             <div className="mobile-card-header">
-              <div className="mobile-card-seq">{row.sequence || index + 1}</div>
+              <div className="mobile-card-seq">{index + 1}</div>
               <div className="mobile-card-codes">
                 <div className="mobile-card-codes-label">SEQ</div>
                 <div className="mobile-card-codes-value">
-                  #{row.sequence || index + 1}
+                  #{row.sequence}
                 </div>
               </div>
             </div>

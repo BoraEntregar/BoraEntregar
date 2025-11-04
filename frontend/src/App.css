@@ -1506,11 +1506,6 @@
     line-height: 1.4;
   }
 
-  .mobile-card-value.coord {
-    font-family: 'Courier New', monospace;
-    font-size: 0.75rem;
-    color: var(--color-gray-600);
-  }
 }
 
 /* Home Page Styles */
