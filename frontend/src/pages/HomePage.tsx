@@ -15,16 +15,23 @@ export default function Home({ onGetStarted }: HomeProps) {
     const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
     setIsIOS(isIOSDevice);
 
+    console.log('User Agent:', userAgent);
+    console.log('Is iOS:', isIOSDevice);
+
     // Detecta se já está rodando como PWA (standalone)
     const isInStandaloneMode = ('standalone' in window.navigator && (window.navigator as any).standalone) ||
                                 window.matchMedia('(display-mode: standalone)').matches;
 
+    console.log('Is Standalone:', isInStandaloneMode);
+
     // Se é iOS e não está em standalone, mostra o botão
     if (isIOSDevice && !isInStandaloneMode) {
+      console.log('Mostrando botão para iOS');
       setShowInstallButton(true);
     }
 
     const handleBeforeInstallPrompt = (event: Event) => {
+      console.log('beforeinstallprompt event fired!');
       // Previne o mini-infobar de aparecer automaticamente
       event.preventDefault();
 
@@ -44,6 +51,8 @@ export default function Home({ onGetStarted }: HomeProps) {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
+
+    console.log('Event listeners adicionados');
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
