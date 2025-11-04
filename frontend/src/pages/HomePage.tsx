@@ -7,8 +7,25 @@ interface HomeProps {
 export default function Home({ onGetStarted }: HomeProps) {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showInstallButton, setShowInstallButton] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
+    // Detecta se é iOS
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
+    setIsIOS(isIOSDevice);
+
+    // Detecta se já está rodando como PWA (standalone)
+    const isInStandaloneMode = ('standalone' in window.navigator && (window.navigator as any).standalone) ||
+                                window.matchMedia('(display-mode: standalone)').matches;
+    setIsStandalone(isInStandaloneMode);
+
+    // Se é iOS e não está em standalone, mostra o botão
+    if (isIOSDevice && !isInStandaloneMode) {
+      setShowInstallButton(true);
+    }
+
     const handleBeforeInstallPrompt = (event: Event) => {
       // Previne o mini-infobar de aparecer automaticamente
       event.preventDefault();
@@ -16,7 +33,7 @@ export default function Home({ onGetStarted }: HomeProps) {
       // Salva o evento para usar depois
       setDeferredPrompt(event);
 
-      // Mostra o botão de instalação
+      // Mostra o botão de instalação (para Chrome/Edge/Android)
       setShowInstallButton(true);
     };
 
@@ -37,6 +54,18 @@ export default function Home({ onGetStarted }: HomeProps) {
   }, []);
 
   const handleInstallClick = async () => {
+    // Se é iOS, mostra instruções
+    if (isIOS) {
+      alert(
+        'Para instalar o app no iOS:\n\n' +
+        '1. Toque no botão "Compartilhar" (ícone de compartilhamento)\n' +
+        '2. Role para baixo e toque em "Adicionar à Tela de Início"\n' +
+        '3. Toque em "Adicionar"'
+      );
+      return;
+    }
+
+    // Para Chrome/Edge/Android
     if (!deferredPrompt) {
       return;
     }
