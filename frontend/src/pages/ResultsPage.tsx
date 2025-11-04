@@ -172,39 +172,44 @@ export default function DataTable({ data, excelService }: DataTableProps) {
 
       {/* Cards para Mobile */}
       <div className="mobile-cards">
-        {(data.data || []).map((row, index) => (
-          <div key={index} className="mobile-card">
-            <div className="mobile-card-header">
-              <div className="mobile-card-seq">{index + 1}</div>
-              <div className="mobile-card-codes">
-                <div className="mobile-card-codes-label">SEQ</div>
-                <div className="mobile-card-codes-value">
-                  {row.sequence ? `#${row.sequence}` : '-'}
+        {(data.data || []).map((row, index) => {
+          // Debug para verificar o que vem em row
+          if (index === 0) console.log('Row data:', row);
+
+          return (
+            <div key={index} className="mobile-card">
+              <div className="mobile-card-header">
+                <div className="mobile-card-seq">{index + 1}</div>
+                <div className="mobile-card-codes">
+                  <div className="mobile-card-codes-label">SEQ</div>
+                  <div className="mobile-card-codes-value">
+                    {row.sequence ? `#${row.sequence}` : `[Debug: ${JSON.stringify(Object.keys(row))}]`}
+                  </div>
+                </div>
+              </div>
+              <div className="mobile-card-body">
+                <div className="mobile-card-row highlight">
+                  <span className="mobile-card-label">Endereço</span>
+                  <span className="mobile-card-value">{row.destinationAddress}</span>
+                </div>
+                <div className="mobile-card-row">
+                  <span className="mobile-card-label">Bairro</span>
+                  <span className="mobile-card-value">{row.bairro || '-'}</span>
+                </div>
+                <div className="mobile-card-row">
+                  <span className="mobile-card-label">Cidade</span>
+                  <span className="mobile-card-value">{row.city || '-'}</span>
+                </div>
+                <div className="mobile-card-row">
+                  <span className="mobile-card-label">SPX TN</span>
+                  <span className="mobile-card-value coord">
+                    {row.packageCode ? row.packageCode.replace(/;\s*/g, ', ') : '-'}
+                  </span>
                 </div>
               </div>
             </div>
-            <div className="mobile-card-body">
-              <div className="mobile-card-row highlight">
-                <span className="mobile-card-label">Endereço</span>
-                <span className="mobile-card-value">{row.destinationAddress}</span>
-              </div>
-              <div className="mobile-card-row">
-                <span className="mobile-card-label">Bairro</span>
-                <span className="mobile-card-value">{row.bairro || '-'}</span>
-              </div>
-              <div className="mobile-card-row">
-                <span className="mobile-card-label">Cidade</span>
-                <span className="mobile-card-value">{row.city || '-'}</span>
-              </div>
-              <div className="mobile-card-row">
-                <span className="mobile-card-label">SPX TN</span>
-                <span className="mobile-card-value coord">
-                  {row.packageCode ? row.packageCode.replace(/;\s*/g, ', ') : '-'}
-                </span>
-              </div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {(!data.data || data.data.length === 0) && (
