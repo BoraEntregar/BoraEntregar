@@ -304,39 +304,29 @@
 }
 
 .footer-beta .warning-icon {
-  color: #f59e0b; /* amarelo/alarme */
+  color: var(--color-accent-dark);
   width: 18px;
   height: 18px;
 }
 
 .footer-beta .beta-text {
   font-size: 0.95rem;
-  color: #374151; /* cinza escuro */
+  color: var(--color-gray-700);
   text-align: center;
 }
 
 .footer-beta .beta-link {
-  color: #2563eb; /* azul primário */
+  color: var(--color-primary);
   text-decoration: underline;
 }
 
 .footer-beta .beta-link.whatsapp {
-  color: #16a34a; /* verde WhatsApp */
+  color: var(--color-success-dark);
 }
 
 .app-footer .version {
   text-align: center;
   margin-top: 0.25rem;
-}
-
-/* Auth Loading State */
-.auth-loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  font-size: 1.2rem;
-  color: #667eea;
 }
 
 /* Logo Cursor */

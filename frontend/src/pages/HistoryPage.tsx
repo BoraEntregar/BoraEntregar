@@ -174,8 +174,7 @@ export default function History({ onViewDetails, excelService }: HistoryProps) {
                   </button>
                   <button
                     onClick={() => handleExport(item._id, item.routeName)}
-                    className="btn-action"
-                    style={{ backgroundColor: '#f59e0b', color: 'white' }}
+                    className="btn-action btn-export-excel"
                     title="Exportar para Excel"
                   >
                     <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
