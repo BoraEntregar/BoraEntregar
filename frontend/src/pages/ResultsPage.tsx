@@ -152,59 +152,142 @@ export default function DataTable({ data, excelService }: DataTableProps) {
             </tr>
           </thead>
           <tbody>
-            {(data.data || []).map((row, index) => (
-              <tr key={index}>
-                <td className="seq">{row.sequence || index + 1}</td>
-                <td className="package-code" title={row.packageCode || '-'}>
-                  {row.packageCode ? row.packageCode.replace(/;\s*/g, '\n') : '-'}
-                </td>
-                <td className="address">{row.destinationAddress}</td>
-                <td>{row.bairro || '-'}</td>
-                <td>{row.city || '-'}</td>
-                <td>{row.zipcode || '-'}</td>
-                <td className="coord">{row.latitude}</td>
-                <td className="coord">{row.longitude}</td>
-              </tr>
-            ))}
+            {(data.data || []).map((row, index) => {
+              // Aplicar a mesma lógica do mobile para desktop
+              const packageCodes = row.packageCode ? String(row.packageCode).split(/[;,]\s*/).filter(c => c.trim()) : [];
+              const packageCount = packageCodes.length;
+
+              let sequenceDisplay = '';
+              const seqValue = String(row.sequence || '').trim();
+
+              if (seqValue && seqValue.includes(';')) {
+                sequenceDisplay = seqValue;
+              } else if (seqValue && packageCount > 1) {
+                const baseSeq = parseInt(seqValue);
+                if (!isNaN(baseSeq)) {
+                  const sequences = Array.from({ length: packageCount }, (_, i) => baseSeq + i);
+                  sequenceDisplay = sequences.join('; ');
+                } else {
+                  sequenceDisplay = seqValue;
+                }
+              } else if (seqValue) {
+                sequenceDisplay = seqValue;
+              } else if (packageCount > 1) {
+                let currentSeq = 1;
+                for (let i = 0; i < index; i++) {
+                  const prevPackageCodes = data.data[i].packageCode ? String(data.data[i].packageCode).split(/[;,]\s*/).filter(c => c.trim()) : [];
+                  currentSeq += prevPackageCodes.length;
+                }
+                const sequences = Array.from({ length: packageCount }, (_, i) => currentSeq + i);
+                sequenceDisplay = sequences.join('; ');
+              } else {
+                let currentSeq = 1;
+                for (let i = 0; i < index; i++) {
+                  const prevPackageCodes = data.data[i].packageCode ? String(data.data[i].packageCode).split(/[;,]\s*/).filter(c => c.trim()) : [];
+                  currentSeq += prevPackageCodes.length;
+                }
+                sequenceDisplay = String(currentSeq);
+              }
+
+              return (
+                <tr key={index}>
+                  <td className="seq">{sequenceDisplay}</td>
+                  <td className="package-code" title={row.packageCode || '-'}>
+                    {row.packageCode ? row.packageCode.replace(/;\s*/g, '\n') : '-'}
+                  </td>
+                  <td className="address">{row.destinationAddress}</td>
+                  <td>{row.bairro || '-'}</td>
+                  <td>{row.city || '-'}</td>
+                  <td>{row.zipcode || '-'}</td>
+                  <td className="coord">{row.latitude}</td>
+                  <td className="coord">{row.longitude}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
 
       {/* Cards para Mobile */}
       <div className="mobile-cards">
-        {(data.data || []).map((row, index) => (
-          <div key={index} className="mobile-card">
-            <div className="mobile-card-header">
-              <div className="mobile-card-seq">{row.sequence || index + 1}</div>
-              <div className="mobile-card-codes">
-                <div className="mobile-card-codes-label">SEQ</div>
-                <div className="mobile-card-codes-value">
-                  #{row.sequence || index + 1}
+        {(data.data || []).map((row, index) => {
+          // Contar quantos códigos SPX TN existem
+          const packageCodes = row.packageCode ? String(row.packageCode).split(/[;,]\s*/).filter(c => c.trim()) : [];
+          const packageCount = packageCodes.length;
+
+          // Formatar a sequência
+          let formattedSequence = '';
+          const seqValue = String(row.sequence || '').trim();
+
+          if (seqValue && seqValue.includes(';')) {
+            // Se já tem múltiplos valores separados por ponto-e-vírgula (ex: "1; 2; 3")
+            formattedSequence = seqValue.split(/[;,]\s*/).map(s => `#${s.trim()}`).join('; ');
+          } else if (seqValue && packageCount > 1) {
+            // Se tem apenas um número mas múltiplos pacotes, gerar sequência
+            const baseSeq = parseInt(seqValue);
+            if (!isNaN(baseSeq)) {
+              const sequences = Array.from({ length: packageCount }, (_, i) => `#${baseSeq + i}`);
+              formattedSequence = sequences.join('; ');
+            } else {
+              formattedSequence = `#${seqValue}`;
+            }
+          } else if (seqValue) {
+            // Apenas um número
+            formattedSequence = `#${seqValue}`;
+          } else if (packageCount > 1) {
+            // Sequence vazio mas tem múltiplos pacotes - gerar baseado no index
+            // Precisamos calcular qual seria o primeiro número de sequência
+            let currentSeq = 1;
+            for (let i = 0; i < index; i++) {
+              const prevPackageCodes = data.data[i].packageCode ? String(data.data[i].packageCode).split(/[;,]\s*/).filter(c => c.trim()) : [];
+              currentSeq += prevPackageCodes.length;
+            }
+            const sequences = Array.from({ length: packageCount }, (_, i) => `#${currentSeq + i}`);
+            formattedSequence = sequences.join('; ');
+          } else {
+            // Sequence vazio e apenas 1 pacote
+            let currentSeq = 1;
+            for (let i = 0; i < index; i++) {
+              const prevPackageCodes = data.data[i].packageCode ? String(data.data[i].packageCode).split(/[;,]\s*/).filter(c => c.trim()) : [];
+              currentSeq += prevPackageCodes.length;
+            }
+            formattedSequence = `#${currentSeq}`;
+          }
+
+          return (
+            <div key={index} className="mobile-card">
+              <div className="mobile-card-header">
+                <div className="mobile-card-seq">{index + 1}</div>
+                <div className="mobile-card-codes">
+                  <div className="mobile-card-codes-label">SEQ</div>
+                  <div className="mobile-card-codes-value">
+                    {formattedSequence}
+                  </div>
+                </div>
+              </div>
+              <div className="mobile-card-body">
+                <div className="mobile-card-row highlight">
+                  <span className="mobile-card-label">Endereço</span>
+                  <span className="mobile-card-value">{row.destinationAddress}</span>
+                </div>
+                <div className="mobile-card-row">
+                  <span className="mobile-card-label">Bairro</span>
+                  <span className="mobile-card-value">{row.bairro || '-'}</span>
+                </div>
+                <div className="mobile-card-row">
+                  <span className="mobile-card-label">Cidade</span>
+                  <span className="mobile-card-value">{row.city || '-'}</span>
+                </div>
+                <div className="mobile-card-row">
+                  <span className="mobile-card-label">SPX TN</span>
+                  <span className="mobile-card-value coord">
+                    {row.packageCode ? row.packageCode.replace(/;\s*/g, ', ') : '-'}
+                  </span>
                 </div>
               </div>
             </div>
-            <div className="mobile-card-body">
-              <div className="mobile-card-row highlight">
-                <span className="mobile-card-label">Endereço</span>
-                <span className="mobile-card-value">{row.destinationAddress}</span>
-              </div>
-              <div className="mobile-card-row">
-                <span className="mobile-card-label">Bairro</span>
-                <span className="mobile-card-value">{row.bairro || '-'}</span>
-              </div>
-              <div className="mobile-card-row">
-                <span className="mobile-card-label">Cidade</span>
-                <span className="mobile-card-value">{row.city || '-'}</span>
-              </div>
-              <div className="mobile-card-row">
-                <span className="mobile-card-label">SPX TN</span>
-                <span className="mobile-card-value coord">
-                  {row.packageCode ? row.packageCode.replace(/;\s*/g, ', ') : '-'}
-                </span>
-              </div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {(!data.data || data.data.length === 0) && (
