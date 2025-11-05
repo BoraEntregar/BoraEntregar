@@ -13,6 +13,13 @@ if (!domain || !clientId) {
   throw new Error('Auth0 configuration is missing. Please check your environment variables.')
 }
 
+// Registra o Service Worker para PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Auth0Provider

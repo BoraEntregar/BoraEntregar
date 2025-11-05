@@ -10,14 +10,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   if (isLoading) {
     return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        fontSize: '1.2rem',
-        color: '#667eea'
-      }}>
+      <div className="auth-loading-container">
         <div>Carregando...</div>
       </div>
     );

@@ -122,7 +122,7 @@ export default function UploadPage({ onSuccess, excelService }: UploadPageProps)
             accept=".xlsx,.xls"
             onChange={handleFileChange}
             disabled={loading}
-            style={{ display: 'none' }}
+            className="hidden-file-input"
           />
 
           <label htmlFor="file-input" className="drop-zone-label">

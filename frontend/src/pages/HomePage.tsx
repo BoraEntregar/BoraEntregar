@@ -1,13 +1,72 @@
+import { useEffect, useState } from 'react';
+
 interface HomeProps {
   onGetStarted: () => void;
 }
 
 export default function Home({ onGetStarted }: HomeProps) {
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showInstallButton, setShowInstallButton] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+
+  useEffect(() => {
+    // Detecta se é iOS
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
+    setIsIOS(isIOSDevice);
+
+    // Detecta se já está rodando como PWA (standalone)
+    const isInStandaloneMode = ('standalone' in window.navigator && (window.navigator as any).standalone) ||
+                                window.matchMedia('(display-mode: standalone)').matches;
+
+    // Se é iOS e não está em standalone, mostra o botão
+    if (isIOSDevice && !isInStandaloneMode) {
+      setShowInstallButton(true);
+    }
+
+    const handleBeforeInstallPrompt = (event: Event) => {
+      event.preventDefault();
+      setDeferredPrompt(event);
+      setShowInstallButton(true);
+    };
+
+    const handleAppInstalled = () => {
+      setShowInstallButton(false);
+      setDeferredPrompt(null);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (isIOS) {
+      alert(
+        'Para instalar o app no iOS:\n\n' +
+        '1. Toque no botão "Compartilhar" (ícone de compartilhamento)\n' +
+        '2. Role para baixo e toque em "Adicionar à Tela de Início"\n' +
+        '3. Toque em "Adicionar"'
+      );
+      return;
+    }
+
+    if (!deferredPrompt) {
+      return;
+    }
+
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    setDeferredPrompt(null);
+  };
+
   return (
     <div className="home-container">
-      {/* Hero Section */}
       <section className="hero-section">
-        {/* Video Background */}
         <div className="video-background">
           <video
             autoPlay
@@ -48,6 +107,15 @@ export default function Home({ onGetStarted }: HomeProps) {
               </svg>
               Começar Agora
             </button>
+
+            {showInstallButton && (
+              <button className="btn-secondary" onClick={handleInstallClick}>
+                <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                Instalar App
+              </button>
+            )}
 
             <button className="btn-secondary" onClick={() => {
               const featuresSection = document.getElementById('features');
@@ -186,7 +254,7 @@ export default function Home({ onGetStarted }: HomeProps) {
             <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
-            Enviar Planilha Agora
+            Otimizar rota
           </button>
         </div>
       </section>

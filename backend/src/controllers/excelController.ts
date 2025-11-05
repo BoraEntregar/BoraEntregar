@@ -129,8 +129,8 @@ export class ExcelController {
         return;
       }
 
-      // Verificar se o arquivo existe no disco
-      if (!FileStorage.fileExists(processedData.filePath)) {
+      // Verificar se o filePath existe e se o arquivo está no disco
+      if (!processedData.filePath || !FileStorage.fileExists(processedData.filePath)) {
         res.status(404).json({
           success: false,
           message: 'Arquivo processado não encontrado no servidor'
@@ -226,8 +226,8 @@ export class ExcelController {
         return;
       }
 
-      // Verificar se o arquivo existe no disco
-      if (!FileStorage.fileExists(record.filePath)) {
+      // Verificar se o filePath existe e se o arquivo está no disco
+      if (!record.filePath || !FileStorage.fileExists(record.filePath)) {
         res.status(404).json({
           success: false,
           message: 'Arquivo processado não encontrado no servidor'
@@ -290,8 +290,8 @@ export class ExcelController {
         return;
       }
 
-      // Verificar se o arquivo existe no disco
-      if (!FileStorage.fileExists(record.filePath)) {
+      // Verificar se o filePath existe e se o arquivo está no disco
+      if (!record.filePath || !FileStorage.fileExists(record.filePath)) {
         res.status(404).json({
           success: false,
           message: 'Arquivo não encontrado no servidor'
@@ -345,12 +345,16 @@ export class ExcelController {
         return;
       }
 
-      // Deletar arquivo do disco
-      try {
-        await FileStorage.deleteFile(deleted.filePath);
-      } catch (error) {
-        console.warn('Erro ao deletar arquivo do disco:', error);
-        // Continua mesmo se falhar ao deletar o arquivo físico
+      // Deletar arquivo do disco (se existir o filePath)
+      if (deleted.filePath) {
+        try {
+          await FileStorage.deleteFile(deleted.filePath);
+        } catch (error) {
+          console.warn('Erro ao deletar arquivo do disco:', error);
+          // Continua mesmo se falhar ao deletar o arquivo físico
+        }
+      } else {
+        console.warn('Registro deletado mas não tinha filePath associado (pode ser registro antigo)')
       }
 
       res.status(200).json({
