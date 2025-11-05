@@ -2066,12 +2066,14 @@
   width: 85%;
   max-width: 400px;
   height: 100vh;
+  height: 100dvh;
   background: var(--color-white);
   box-shadow: -8px 0 32px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
   animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-y: auto;
+  overflow-x: hidden;
   z-index: 10000;
   position: relative;
 }
@@ -2152,6 +2154,7 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .mobile-menu-user::before {
@@ -2167,8 +2170,8 @@
 }
 
 .mobile-user-avatar {
-  width: 60px;
-  height: 60px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   border: 3px solid var(--color-white);
   object-fit: cover;
@@ -2176,6 +2179,7 @@
   position: relative;
   z-index: 1;
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .mobile-user-avatar:hover {
@@ -2189,19 +2193,28 @@
   gap: var(--spacing-xs);
   position: relative;
   z-index: 1;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .mobile-user-name {
   font-weight: 700;
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   color: var(--color-white);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .mobile-user-email {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   color: rgba(255, 255, 255, 0.9);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Mobile Menu Items */
@@ -2276,9 +2289,11 @@
 
 /* Mobile Menu Actions */
 .mobile-menu-actions {
-  padding: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  padding-bottom: calc(var(--spacing-lg) + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--color-gray-200);
   background: var(--color-gray-50);
+  flex-shrink: 0;
 }
 
 .mobile-logout-btn,
@@ -2288,15 +2303,16 @@
   justify-content: center;
   gap: var(--spacing-sm);
   width: 100%;
-  padding: var(--spacing-lg) var(--spacing-xl);
+  padding: var(--spacing-md) var(--spacing-lg);
   border: none;
   border-radius: var(--radius-md);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  min-height: 48px;
 }
 
 .mobile-logout-btn::before,
