@@ -19,6 +19,7 @@ function App() {
   const { processedData, updateProcessedData, clearProcessedData, hasData } = useProcessedData();
   const [loading, setLoading] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Criar instância autenticada da API
   const excelService = useMemo(
@@ -42,6 +43,18 @@ function App() {
       }
     }
   }, [isAuthenticated, authLoading]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
 
   // Handler para login com popup
   const handleLogin = async () => {
@@ -115,6 +128,12 @@ function App() {
     }
 
     setCurrentView(view);
+    setMobileMenuOpen(false); // Fecha o menu mobile ao navegar
+  };
+
+  const handleMobileNavigation = (view: ViewType) => {
+    setCurrentView(view);
+    setMobileMenuOpen(false);
   };
 
   // Mostrar loading enquanto verifica autenticação
@@ -131,7 +150,7 @@ function App() {
       <Toaster
         position="top-right"
         toastOptions={{
-          duration: 4000,
+          duration: 2500,
           style: {
             background: '#ffffff',
             color: '#1f2937',
@@ -155,17 +174,17 @@ function App() {
 
       <nav className="app-nav">
         <div className="nav-wrapper">
-
           <div className="nav-logo">
             <img
               src="/imgs/BoraEntregar.svg"
               alt="BoraEntregar"
-              onClick={() => setCurrentView(VIEWS.HOME)}
+              onClick={() => handleMobileNavigation(VIEWS.HOME)}
               className="clickable"
             />
           </div>
 
-          <div className="nav-content">
+          {/* Desktop Navigation */}
+          <div className="nav-content desktop-nav">
             <button
               className={`nav-btn ${currentView === VIEWS.HOME ? 'active' : ''}`}
               onClick={() => setCurrentView(VIEWS.HOME)}
@@ -209,8 +228,8 @@ function App() {
             </button>
           </div>
 
-          {/* User Controls */}
-          <div className="nav-user">
+          {/* Desktop User Controls */}
+          <div className="nav-user desktop-nav">
             {isAuthenticated ? (
               <>
                 <button
@@ -257,7 +276,152 @@ function App() {
               </button>
             )}
           </div>
+
+          {/* Mobile Hamburger Button */}
+          <button
+            className="mobile-menu-toggle"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+            title={mobileMenuOpen ? "Fechar menu" : "Abrir menu"}
+          >
+            <span className={`hamburger ${mobileMenuOpen ? 'open' : ''}`}>
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </button>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        {mobileMenuOpen && (
+          <div className="mobile-menu-overlay" onClick={() => setMobileMenuOpen(false)}>
+            <div className="mobile-menu" onClick={(e) => e.stopPropagation()}>
+              {/* Close Button */}
+              <button
+                className="mobile-menu-close"
+                onClick={() => setMobileMenuOpen(false)}
+                aria-label="Fechar menu"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              {/* Mobile User Section */}
+              <div className="mobile-menu-user">
+                {isAuthenticated && user?.picture && (
+                  <img
+                    src={user.picture}
+                    alt={user.name || 'User'}
+                    className="mobile-user-avatar"
+                  />
+                )}
+                <div className="mobile-user-info">
+                  {isAuthenticated ? (
+                    <>
+                      <span className="mobile-user-name">{user?.name || user?.email}</span>
+                      <span className="mobile-user-email">{user?.email}</span>
+                    </>
+                  ) : (
+                    <span className="mobile-user-name">Bem-vindo!</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Mobile Navigation Items */}
+              <div className="mobile-menu-items">
+                <button
+                  className={`mobile-menu-item ${currentView === VIEWS.HOME ? 'active' : ''}`}
+                  onClick={() => handleMobileNavigation(VIEWS.HOME)}
+                >
+                  <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                  </svg>
+                  <span>Início</span>
+                </button>
+
+                <button
+                  className={`mobile-menu-item ${currentView === VIEWS.UPLOAD ? 'active' : ''}`}
+                  onClick={() => {
+                    handleNewUpload();
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                  <span>Otimizar rotas</span>
+                </button>
+
+                {isAuthenticated && hasData && (
+                  <button
+                    className={`mobile-menu-item ${currentView === VIEWS.RESULTS ? 'active' : ''}`}
+                    onClick={() => handleProtectedNavigation(VIEWS.RESULTS)}
+                  >
+                    <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>Resultados</span>
+                  </button>
+                )}
+
+                <button
+                  className={`mobile-menu-item ${currentView === VIEWS.HISTORY ? 'active' : ''}`}
+                  onClick={() => handleProtectedNavigation(VIEWS.HISTORY)}
+                >
+                  <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Histórico</span>
+                </button>
+
+                {isAuthenticated && (
+                  <button
+                    className={`mobile-menu-item ${currentView === VIEWS.PROFILE ? 'active' : ''}`}
+                    onClick={() => handleProtectedNavigation(VIEWS.PROFILE)}
+                  >
+                    <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span>Perfil</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Mobile Menu Actions */}
+              <div className="mobile-menu-actions">
+                {isAuthenticated ? (
+                  <button
+                    onClick={() => {
+                      logout({ logoutParams: { returnTo: window.location.origin } });
+                      setMobileMenuOpen(false);
+                    }}
+                    className="mobile-logout-btn"
+                  >
+                    <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    <span>Sair</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      handleLogin();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="mobile-login-btn"
+                    disabled={loginLoading}
+                  >
+                    <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                    </svg>
+                    <span>{loginLoading ? 'Carregando...' : 'Login'}</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </nav>
 
       <main className="app-main">
