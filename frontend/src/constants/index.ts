@@ -1,6 +1,6 @@
 // App Constants
 export const APP_NAME = 'BoraEntregar';
-export const APP_VERSION = 'v1.0.0';
+export const APP_VERSION = 'v1.0';
 export const APP_DESCRIPTION = 'Sistema de Agrupamento de Rotas de Entrega';
 
 // API Configuration
